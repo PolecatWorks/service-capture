@@ -1,0 +1,22 @@
+replicaCount: 1
+
+image:
+  repository: service-capture-backend
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+
+resources: {}
+
+postgres:
+  enabled: true
+  image: postgres:15-alpine
+  user: user
+  password: password
+  db: service_capture

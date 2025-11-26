@@ -1,3 +1,4 @@
+pub mod services;
 pub mod users;
 
 use axum::{
@@ -162,6 +163,7 @@ pub async fn start_app_api(
     // Setup http server
     let app = Router::new()
         .nest("/users", users::user_apis())
+        .nest("/services", services::service_apis())
         .route("/hello", get(|| async { "Hello, World!" }))
         // .route("/metrics", get(|| async move { metric_handle.render() }))
         .layer(

@@ -12,9 +12,9 @@ hams:
 runtime:
   stack_size: 3145728
   threads: 4
-  name: rustybill
+  name: service-capture
 webservice:
-  prefix: log4ham
+  prefix: /capture
   address: 0.0.0.0:8080
   forwarding_headers: []
 persistence:

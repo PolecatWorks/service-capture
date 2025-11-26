@@ -3,7 +3,12 @@
 
 BE_DIR := backend
 
+status-ports:
+	@lsof -i tcp:8080
+	@lsof -i tcp:4200
 
+
+backend-dev: export CAPTURE_LOG=INFO
 backend-dev:
 	cd ${BE_DIR} && cargo watch  -x "run -- start --config test-data/config-localhost.yaml --secrets test-data/secrets"
 

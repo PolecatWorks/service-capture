@@ -186,7 +186,7 @@ pub async fn start_app_api(
         .layer(metric_layer)
         .with_state(shared_state);
 
-    let prefix_app = Router::new().nest("/capture", app);
+    let prefix_app = Router::new().nest(&prefix, app);
 
     // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind(state.config.webservice.address).await?;
@@ -195,7 +195,10 @@ pub async fn start_app_api(
         ct.cancelled().await
     });
 
-    info!("Server started on port {}", state.config.webservice.address);
+    info!(
+        "Server started on {}{prefix}",
+        state.config.webservice.address
+    );
 
     Ok(server.await?)
 }

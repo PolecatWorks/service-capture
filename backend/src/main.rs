@@ -18,6 +18,7 @@ use service_capture::{
 use tracing::{Level, debug, error, info};
 
 use service_capture::{NAME, VERSION, service_start};
+use tracing_subscriber::EnvFilter;
 
 /// Application definition to defer to set of commands under [Commands]
 #[derive(Parser)]
@@ -84,7 +85,8 @@ enum Commands {
 
 fn main() -> Result<ExitCode, MyError> {
     tracing_subscriber::fmt()
-        .with_max_level(Level::ERROR)
+        .with_max_level(Level::INFO)
+        .with_env_filter(EnvFilter::from_env("CAPTURE_LOG"))
         // This allows you to use, e.g., `RUST_LOG=info` or `RUST_LOG=debug`
         // when running the app to set log levels.
         // .with_env_filter(

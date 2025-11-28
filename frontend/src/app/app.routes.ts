@@ -3,6 +3,7 @@ import { HomeComponent } from './components/home/home.component';
 import { LoginUserComponent } from './components/login-user/login-user.component';
 import { UsersComponent } from './components/users/users.component';
 import { UserComponent } from './components/user/user.component';
+import { ServiceComponent } from './components/service/service.component';
 
 export const routes: Routes = [
   {
@@ -27,6 +28,21 @@ export const routes: Routes = [
           },
         ],
       },
+      {
+        path: 'services',
+        loadComponent: () => import('./components/services/services.component').then(m => m.ServicesComponent),
+        children: [
+          {
+            path: 'new',
+            component: ServiceComponent,
+          },
+          {
+            path: 'edit/:id',
+            component: ServiceComponent,
+          },
+        ]
+      },
+
     ],
   },
   { path: '**', pathMatch: 'full', redirectTo: 'home' },

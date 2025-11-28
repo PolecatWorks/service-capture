@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Log4HamService } from './log4ham.service';
+import { CaptureService } from './capture.service';
 
 describe('Log4HamService', () => {
-  let service: Log4HamService;
+  let service: CaptureService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(Log4HamService);
+    service = TestBed.inject(CaptureService);
   });
 
   it('should be created', () => {

@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, forkJoin, map, Observable, Subject, switchMap, tap, throwError } from 'rxjs';
 import { ListPages, PageOptions } from './pagination';
-import { Contact } from '../structs/contact';
+
 
 export function asHttpParams<T>(options: PageOptions<T>): HttpParams {
   const simpleObj: Record<string, string> = {};
@@ -19,16 +19,17 @@ export function asHttpParams<T>(options: PageOptions<T>): HttpParams {
   return new HttpParams({ fromObject: simpleObj });
 }
 
-export class RestGeneric<T> {
+export class RestGeneric<T extends { id?: string | number }> {
   constructor(
-    private http: HttpClient,
+    protected http: HttpClient,
     public url: string,
     public name: string
-  ) {}
+  ) { }
 
   private source = new Subject<number>();
 
   sourceUpdate() {
+    console.log('refreshing ' + this.name);
     return this.source.asObservable();
   }
 
@@ -38,7 +39,7 @@ export class RestGeneric<T> {
 
   getPagedIds(query: PageOptions<T>) {
     const params = asHttpParams(query);
-
+    console.log('refreshing ' + this.name + ' params: ', params);
     return this.http.get<ListPages<number, T>>(this.url, { params: params }).pipe(
       catchError(error => {
         console.error('Error:', error);
@@ -80,7 +81,7 @@ export class RestGeneric<T> {
     );
   }
 
-  update(record: Contact) {
+  update(record: T) {
     return this.http.put<T>(this.url + '/' + record.id, record).pipe(
       tap(updatedRecord => {
         console.log('Updated: ', updatedRecord);

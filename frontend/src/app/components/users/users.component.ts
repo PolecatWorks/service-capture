@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { Log4HamService } from '../../services/log4ham.service';
+import { CaptureService } from '../../services/capture.service';
 import { CommonModule } from '@angular/common';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { User } from '../../structs/user';
@@ -19,21 +19,21 @@ export class UsersComponent implements AfterViewInit {
   displayedColumns: string[] = ['forename', 'surname'];
   data: PaginationDataSource<User>;
 
-  constructor(private log4HamService: Log4HamService) {
+  constructor(private captureService: CaptureService) {
     // console.log("fetch for dataSource");
     // this.data.fetch(1);
 
     this.data = new PaginationDataSource<User>(
-      (request: PageOptions<User>) => this.log4HamService.usersGetPagedDetail(request),
-      this.log4HamService.usersSourceUpdate(),
+      (request: PageOptions<User>) => this.captureService.usersGetPagedDetail(request),
+      this.captureService.usersSourceUpdate(),
       { property: 'surname', order: 'asc' },
-      1
+      0
     );
   }
   ngAfterViewInit(): void {
     this.data.sortBy({ property: 'surname', order: 'asc' });
     this.data.fetch(0);
-    this.log4HamService.usersSourceRefresh(Date.now());
+    this.captureService.usersSourceRefresh(Date.now());
     console.log('Have send sortBy and fetch');
     // throw new Error('Method not implemented.');
   }
@@ -41,7 +41,7 @@ export class UsersComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   usersCreate(user: User) {
-    this.log4HamService.usersCreate(user).subscribe({
+    this.captureService.usersCreate(user).subscribe({
       next: data => {
         console.log('create: ', data);
         this.data.fetch(0);

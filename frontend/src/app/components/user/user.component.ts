@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Log4HamService } from '../../services/log4ham.service';
+import { CaptureService } from '../../services/capture.service';
 import { of, switchMap } from 'rxjs';
 import { User } from '../../structs/user';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,14 +19,14 @@ export class UserComponent {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private log4hamService: Log4HamService,
+    private captureService: CaptureService,
     private router: Router
   ) {
     this.activatedRoute.params
       .pipe(
         switchMap(param => {
           if ('id' in param) {
-            return this.log4hamService.usersGet(param['id']);
+            return this.captureService.usersGet(param['id']);
           } else {
             console.log('id not provided so creating a new user');
             return of({} as User);
@@ -44,7 +44,7 @@ export class UserComponent {
 
   submit() {
     if (this.newRecord()) {
-      this.log4hamService.usersCreate(this.user).subscribe({
+      this.captureService.usersCreate(this.user).subscribe({
         next: data => {
           console.log('Created: ', data);
 
@@ -55,7 +55,7 @@ export class UserComponent {
         },
       });
     } else {
-      this.log4hamService.usersUpdate(this.user).subscribe({
+      this.captureService.usersUpdate(this.user).subscribe({
         next: data => {
           console.log('updated: ', data);
 

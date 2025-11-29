@@ -42,6 +42,10 @@ export const routes: Routes = [
           },
         ]
       },
+      {
+        path: 'view',
+        loadComponent: () => import('./components/service-view/service-view.component').then(m => m.ServiceViewComponent),
+      },
 
     ],
   },

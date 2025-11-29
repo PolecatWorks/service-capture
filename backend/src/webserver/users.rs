@@ -38,7 +38,7 @@ impl User {
 
 pub(crate) fn user_apis() -> Router<MyState> {
     Router::new()
-        .route("/", post(user_create).get(list))
+        .route("/", post(create).get(list))
         .route("/{id}", get(read).put(update).delete(delete))
     // Add other user-related routes here
 }
@@ -67,7 +67,7 @@ pub(crate) fn user_apis() -> Router<MyState> {
 ///      -H "Content-Type: application/json" \
 ///      -d '{"forename": "John", "surname": "Doe", "password": "secret"}'
 /// ```
-pub async fn user_create(
+pub async fn create(
     State(state): State<MyState>,
     AppJson(user): AppJson<User>,
 ) -> Result<impl IntoResponse, MyError> {

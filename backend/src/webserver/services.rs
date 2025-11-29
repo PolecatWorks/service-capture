@@ -67,7 +67,7 @@ async fn create(
     AppJson(payload): AppJson<Service>,
 ) -> Result<impl IntoResponse, MyError> {
     let service = sqlx::query_as::<_, Service>(
-        "INSERT INTO services (name, p99_millis) VALUES ($1, $2) RETURNING id, name, p99_millis RETURNING *",
+        "INSERT INTO services (name, p99_millis) VALUES ($1, $2) RETURNING *",
     )
     .bind(payload.name)
     .bind(payload.p99_millis)

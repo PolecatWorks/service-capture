@@ -1,19 +1,19 @@
 use std::sync::Arc;
 
+use axum::http::StatusCode;
 use axum::{
+    Json, Router,
     extract::{FromRequest, Path, Query, State},
     response::{IntoResponse, Response},
     routing::{get, post},
-    Json, Router,
 };
-use axum::http::StatusCode;
 use serde::{Deserialize, Serialize};
-use tracing::{info, Level};
+use tracing::{Level, info};
 
 use crate::{
+    MyState,
     error::MyError,
     webserver::{AppJson, DbBigSerial, ListPages, PageOptions},
-    MyState,
 };
 
 #[derive(Deserialize, Serialize, Debug, sqlx::FromRow, PartialEq, Clone)]
@@ -38,10 +38,8 @@ impl User {
 
 pub(crate) fn user_apis() -> Router<MyState> {
     Router::new()
-        .route("/", post(users_create).get(list))
-        .route("/{id}", get(read)
-            .put(update)
-            .delete(delete))
+        .route("/", post(user_create).get(list))
+        .route("/{id}", get(read).put(update).delete(delete))
     // Add other user-related routes here
 }
 
@@ -69,7 +67,7 @@ pub(crate) fn user_apis() -> Router<MyState> {
 ///      -H "Content-Type: application/json" \
 ///      -d '{"forename": "John", "surname": "Doe", "password": "secret"}'
 /// ```
-pub async fn users_create(
+pub async fn user_create(
     State(state): State<MyState>,
     AppJson(user): AppJson<User>,
 ) -> Result<impl IntoResponse, MyError> {
@@ -88,13 +86,13 @@ pub async fn users_create(
             VALUES ($1, $2, $3)
             RETURNING *
             "#,
-        )
-        .bind(&user.forename)
-        .bind(&user.surname)
-        .bind(&user.password)
-        .fetch_one(&state.db_state.pool_pg)
-        .await
-        .map_err(MyError::from)?;
+    )
+    .bind(&user.forename)
+    .bind(&user.surname)
+    .bind(&user.password)
+    .fetch_one(&state.db_state.pool_pg)
+    .await
+    .map_err(MyError::from)?;
 
     Ok((StatusCode::CREATED, AppJson(user)).into_response())
 }
@@ -107,28 +105,29 @@ pub async fn users_create(
 pub async fn list(
     State(state): State<MyState>,
     Query(options): Query<PageOptions>,
-) -> Result<impl IntoResponse, MyError> {
+) -> Result<AppJson<ListPages>, MyError> {
     let options = PageOptions::defaulting(options);
 
-        let ids = sqlx::query_as::<_, User>(
-            r#"
+    // ToDo: Add sorting AND minimise so that just the ids are exported out
+    let ids = sqlx::query_as::<_, User>(
+        r#"
             SELECT * FROM users
             LIMIT $1 OFFSET $2
             "#,
-        )
-        .bind(options.size)
-        .bind(options.page.unwrap() * options.size.unwrap())
-        .fetch_all(&state.db_state.pool_pg)
-        .await
-        .map_err(MyError::from)?;
+    )
+    .bind(options.size)
+    .bind(options.page.unwrap() * options.size.unwrap())
+    .fetch_all(&state.db_state.pool_pg)
+    .await
+    .map_err(MyError::from)?;
 
-        let list_ids = ListPages {
-            pagination: options,
-            ids: ids.iter().map(|u| u.id.unwrap()).collect(),
-        };
+    let list_ids = ListPages {
+        pagination: options,
+        ids: ids.iter().map(|u| u.id.unwrap()).collect(),
+    };
 
-        Ok(AppJson(list_ids))
-    }
+    Ok(AppJson(list_ids))
+}
 
 /// # Example cURL Command
 ///
@@ -153,7 +152,6 @@ pub async fn read(
     Ok(AppJson(user))
 }
 
-
 /// Update a user
 ///
 /// This function will update a user in the database
@@ -163,7 +161,9 @@ pub async fn update(
     AppJson(user): AppJson<User>,
 ) -> Result<impl IntoResponse, MyError> {
     if user.id.is_none() || id != user.id.unwrap() {
-        return Err(MyError::Message("ids on path and body must match for update"));
+        return Err(MyError::Message(
+            "ids on path and body must match for update",
+        ));
     }
 
     let user = sqlx::query_as::<_, User>(
@@ -173,14 +173,14 @@ pub async fn update(
         WHERE id = $1
         RETURNING *
         "#,
-        )
-        .bind(id)
-        .bind(&user.forename)
-        .bind(&user.surname)
-        .bind(&user.password)
-        .fetch_one(&state.db_state.pool_pg)
-        .await
-        .map_err(MyError::from)?;
+    )
+    .bind(id)
+    .bind(&user.forename)
+    .bind(&user.surname)
+    .bind(&user.password)
+    .fetch_one(&state.db_state.pool_pg)
+    .await
+    .map_err(MyError::from)?;
 
     Ok(AppJson(user))
 }

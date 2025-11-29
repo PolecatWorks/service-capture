@@ -80,7 +80,7 @@ export class ServiceComponent {
     } else {
       this.servicesService.update(this.service).subscribe({
         next: data => {
-          this.router.navigate(['..'], { relativeTo: this.activatedRoute });
+          this.router.navigate(['../..'], { relativeTo: this.activatedRoute });
         },
         error: error => {
           console.error('Error:', error);

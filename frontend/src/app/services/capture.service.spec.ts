@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { CaptureService } from './capture.service';
 
-describe('Log4HamService', () => {
+describe('CaptureService', () => {
   let service: CaptureService;
 
   beforeEach(() => {

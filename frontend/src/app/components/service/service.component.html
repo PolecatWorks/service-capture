@@ -13,6 +13,16 @@
             <input matInput type="number" [(ngModel)]="service.p99_millis" name="p99_millis" required />
         </mat-form-field>
 
+        <mat-form-field>
+            <mat-label>X Coordinate</mat-label>
+            <input matInput type="number" [(ngModel)]="service.x" name="x" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Y Coordinate</mat-label>
+            <input matInput type="number" [(ngModel)]="service.y" name="y" />
+        </mat-form-field>
+
         <button mat-raised-button color="primary" type="submit">
             Save
         </button>
@@ -21,27 +31,5 @@
         </button>
     </form>
 
-    <!-- <div *ngIf="isEditing" class="dependencies-section">
-        <h2>Dependencies</h2>
-        <div class="add-dependency">
-            <mat-form-field appearance="fill">
-                <mat-label>Add Dependency</mat-label>
-                <mat-select [formControl]="dependencyControl">
-                    <mat-option *ngFor="let s of allServices" [value]="s.id"
-                        [disabled]="s.id === serviceId || isDependency(s.id!)">
-                        {{s.name}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <button mat-raised-button (click)="addDependency()" [disabled]="!dependencyControl.value">Add</button>
-        </div>
 
-        <mat-list>
-            <mat-list-item *ngFor="let dep of dependencies">
-                <mat-icon matListItemIcon>link</mat-icon>
-                <div matListItemTitle>{{dep.name}}</div>
-                <div matListItemLine>P99: {{dep.p99_millis}}ms</div>
-            </mat-list-item>
-        </mat-list>
-    </div> -->
 </div>

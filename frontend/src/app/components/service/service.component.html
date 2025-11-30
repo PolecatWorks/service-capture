@@ -13,6 +13,16 @@
             <input matInput type="number" [(ngModel)]="service.p99_millis" name="p99_millis" required />
         </mat-form-field>
 
+        <mat-form-field>
+            <mat-label>X Coordinate</mat-label>
+            <input matInput type="number" [(ngModel)]="service.x" name="x" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Y Coordinate</mat-label>
+            <input matInput type="number" [(ngModel)]="service.y" name="y" />
+        </mat-form-field>
+
         <button mat-raised-button color="primary" type="submit">
             Save
         </button>

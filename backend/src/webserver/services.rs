@@ -18,9 +18,14 @@ use crate::{
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Service {
+    #[serde(default)]
     pub id: Option<DbBigSerial>,
     pub name: String,
     pub p99_millis: i32,
+    #[serde(default)]
+    pub x: Option<i32>,
+    #[serde(default)]
+    pub y: Option<i32>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -45,7 +50,7 @@ async fn list(
     let options = PageOptions::defaulting(options);
 
     let items = sqlx::query_as::<_, Service>(
-        r#"SELECT id, name, p99_millis FROM services
+        r#"SELECT id, name, p99_millis, x, y FROM services
         LIMIT $1 OFFSET $2
         "#,
     )
@@ -67,10 +72,12 @@ async fn create(
     AppJson(payload): AppJson<Service>,
 ) -> Result<impl IntoResponse, MyError> {
     let service = sqlx::query_as::<_, Service>(
-        "INSERT INTO services (name, p99_millis) VALUES ($1, $2) RETURNING *",
+        "INSERT INTO services (name, p99_millis, x, y) VALUES ($1, $2, $3, $4) RETURNING *",
     )
     .bind(payload.name)
     .bind(payload.p99_millis)
+    .bind(payload.x)
+    .bind(payload.y)
     .fetch_one(&state.db_state.pool_pg)
     .await?;
 
@@ -104,7 +111,7 @@ async fn update(
     let service = sqlx::query_as::<_, Service>(
         r#"
         UPDATE services
-        SET name = $2, p99_millis = $3
+        SET name = $2, p99_millis = $3, x = $4, y = $5
         WHERE id = $1
         RETURNING *
         "#,
@@ -112,6 +119,8 @@ async fn update(
     .bind(id)
     .bind(&payload.name)
     .bind(payload.p99_millis)
+    .bind(payload.x)
+    .bind(payload.y)
     .fetch_one(&state.db_state.pool_pg)
     .await?;
 

@@ -46,8 +46,8 @@ export class ServiceViewComponent implements OnInit {
         this.servicesService.getPagedDetail(pageOptions).subscribe(page => {
             this.services = page.ids.map((service, i) => ({
                 ...service,
-                x: (i % 5) * 20 + 10,
-                y: Math.floor(i / 5) * 20 + 10
+                x: service.x ?? (i % 5) * 20 + 10,
+                y: service.y ?? Math.floor(i / 5) * 20 + 10
             }));
 
             this.dependenciesService.getPagedDetail(pageOptions).subscribe(depPage => {

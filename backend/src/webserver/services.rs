@@ -28,19 +28,10 @@ pub struct Service {
     pub y: Option<i32>,
 }
 
-#[derive(Debug, Deserialize)]
-pub struct AddDependency {
-    pub target_id: DbBigSerial,
-}
-
 pub fn service_apis() -> Router<MyState> {
     Router::new()
         .route("/", post(create).get(list))
         .route("/{id}", get(read).put(update).delete(delete))
-        .route(
-            "/{id}/dependencies",
-            get(list_dependencies).post(add_dependency),
-        )
 }
 
 async fn list(
@@ -137,37 +128,4 @@ async fn delete(
         .await?;
 
     Ok(AppJson(service))
-}
-
-async fn add_dependency(
-    State(state): State<MyState>,
-    Path(source_id): Path<DbBigSerial>,
-    AppJson(payload): AppJson<AddDependency>,
-) -> Result<AppJson<()>, MyError> {
-    sqlx::query("INSERT INTO service_dependencies (source_id, target_id) VALUES ($1, $2)")
-        .bind(source_id)
-        .bind(payload.target_id)
-        .execute(&state.db_state.pool_pg)
-        .await?;
-
-    Ok(AppJson(()))
-}
-
-async fn list_dependencies(
-    State(state): State<MyState>,
-    Path(id): Path<DbBigSerial>,
-) -> Result<AppJson<Vec<Service>>, MyError> {
-    let services = sqlx::query_as::<_, Service>(
-        r#"
-        SELECT s.id, s.name, s.p99_millis
-        FROM services s
-        JOIN service_dependencies sd ON s.id = sd.target_id
-        WHERE sd.source_id = $1
-        "#,
-    )
-    .bind(id)
-    .fetch_all(&state.db_state.pool_pg)
-    .await?;
-
-    Ok(AppJson(services))
 }

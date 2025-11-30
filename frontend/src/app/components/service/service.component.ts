@@ -7,9 +7,7 @@ import { Service } from '../../structs/service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
 import { of, switchMap } from 'rxjs';
 
 
@@ -23,9 +21,7 @@ import { of, switchMap } from 'rxjs';
     FormsModule,
     MatInputModule,
     MatButtonModule,
-    MatSelectModule,
-    MatIconModule,
-    MatListModule
+    MatIconModule
   ],
   templateUrl: './service.component.html',
   styleUrl: './service.component.scss',
@@ -35,9 +31,6 @@ export class ServiceComponent {
 
 
   isEditing = false;
-  serviceId?: number;
-  dependencies: Service[] = [];
-  allServices: Service[] = [];
 
 
   constructor(
@@ -101,18 +94,7 @@ export class ServiceComponent {
 
 
 
-  // addDependency() {
-  //   if (this.serviceId && this.dependencyControl.value) {
-  //     this.servicesService.addDependency(this.serviceId, this.dependencyControl.value).subscribe(() => {
-  //       this.loadDependencies(this.serviceId!);
-  //       this.dependencyControl.reset();
-  //     });
-  //   }
-  // }
 
-  // isDependency(id: number): boolean {
-  //   return this.dependencies.some(d => d.id === id);
-  // }
 
 
 }

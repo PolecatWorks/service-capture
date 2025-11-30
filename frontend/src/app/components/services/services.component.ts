@@ -41,18 +41,7 @@ export class ServicesComponent implements AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  servicesCreate(service: Service) {
-    this.servicesService.create(service).subscribe({
-      next: data => {
-        console.log('create: ', data);
-        this.data.fetch(0);
-      },
-      error: error => {
-        console.error('Error:', error);
-        // this.userIds = -1;
-      },
-    });
-  }
+
 
 
 }

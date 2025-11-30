@@ -23,6 +23,10 @@
             <input matInput type="number" [(ngModel)]="service.y" name="y" />
         </mat-form-field>
 
+        <button mat-raised-button color="accent" type="button" (click)="resetCoordinates()">
+            Reset Coordinates
+        </button>
+
         <button mat-raised-button color="primary" type="submit">
             Save
         </button>

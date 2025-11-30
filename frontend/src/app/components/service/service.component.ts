@@ -90,6 +90,11 @@ export class ServiceComponent {
     }
   }
 
+  resetCoordinates() {
+    this.service.x = null;
+    this.service.y = null;
+  }
+
 
 
 

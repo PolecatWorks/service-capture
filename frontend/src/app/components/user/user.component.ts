@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { CaptureService } from '../../services/capture.service';
+import { UsersService } from '../../services/users.service';
 import { of, switchMap } from 'rxjs';
 import { User } from '../../structs/user';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,14 +19,14 @@ export class UserComponent {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private captureService: CaptureService,
+    private usersService: UsersService,
     private router: Router
   ) {
     this.activatedRoute.params
       .pipe(
         switchMap(param => {
           if ('id' in param) {
-            return this.captureService.usersGet(param['id']);
+            return this.usersService.get(param['id']);
           } else {
             console.log('id not provided so creating a new user');
             return of({} as User);
@@ -44,7 +44,7 @@ export class UserComponent {
 
   submit() {
     if (this.newRecord()) {
-      this.captureService.usersCreate(this.user).subscribe({
+      this.usersService.create(this.user).subscribe({
         next: data => {
           console.log('Created: ', data);
 
@@ -55,7 +55,7 @@ export class UserComponent {
         },
       });
     } else {
-      this.captureService.usersUpdate(this.user).subscribe({
+      this.usersService.update(this.user).subscribe({
         next: data => {
           console.log('updated: ', data);
 

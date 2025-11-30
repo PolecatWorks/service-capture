@@ -1,0 +1,2 @@
+ALTER TABLE services DROP COLUMN y;
+ALTER TABLE services DROP COLUMN x;

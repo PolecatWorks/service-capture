@@ -1,0 +1,35 @@
+<div class="container">
+    <h1>{{ isEditing ? 'Edit Dependency' : 'New Dependency' }}</h1>
+
+    <form (submit)="submit()">
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput [(ngModel)]="dependency.name" name="name" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Source Service</mat-label>
+            <mat-select [(ngModel)]="dependency.source_id" name="source_id" required>
+                <mat-option *ngFor="let service of services" [value]="service.id">
+                    {{service.name}} ({{service.id}})
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Target Service</mat-label>
+            <mat-select [(ngModel)]="dependency.target_id" name="target_id" required>
+                <mat-option *ngFor="let service of services" [value]="service.id">
+                    {{service.name}} ({{service.id}})
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit">
+            Save
+        </button>
+        <button mat-raised-button color="warn" type="button" (click)="cancel()">
+            Cancel
+        </button>
+    </form>
+</div>

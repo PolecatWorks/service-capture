@@ -43,6 +43,20 @@ export const routes: Routes = [
         ]
       },
       {
+        path: 'dependencies',
+        loadComponent: () => import('./components/dependencies/dependencies.component').then(m => m.DependenciesComponent),
+        children: [
+          {
+            path: 'new',
+            loadComponent: () => import('./components/dependency/dependency.component').then(m => m.DependencyComponent),
+          },
+          {
+            path: 'edit/:id',
+            loadComponent: () => import('./components/dependency/dependency.component').then(m => m.DependencyComponent),
+          },
+        ]
+      },
+      {
         path: 'view',
         loadComponent: () => import('./components/service-view/service-view.component').then(m => m.ServiceViewComponent),
       },

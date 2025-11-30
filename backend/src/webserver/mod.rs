@@ -1,3 +1,4 @@
+pub mod dependencies;
 pub mod services;
 pub mod users;
 
@@ -164,6 +165,7 @@ pub async fn start_app_api(
     let app = Router::new()
         .nest("/users", users::user_apis())
         .nest("/services", services::service_apis())
+        .nest("/dependencies", dependencies::dependency_apis())
         .route("/hello", get(|| async { "Hello, World!" }))
         // .route("/metrics", get(|| async move { metric_handle.render() }))
         .layer(

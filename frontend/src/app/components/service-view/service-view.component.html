@@ -1,12 +1,22 @@
 <div class="service-view-container">
     <svg class="service-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-        <g *ngFor="let service of services; let i = index">
-            <circle [attr.cx]="(i % 10) * 10 + 5" [attr.cy]="Math.floor(i / 10) * 10 + 5" r="4" fill="#3f51b5"
-                opacity="0.7">
+        <!-- Draw connections first so they are behind the nodes -->
+        <g *ngFor="let conn of connections">
+            <line [attr.x1]="conn.x1" [attr.y1]="conn.y1" [attr.x2]="conn.x2" [attr.y2]="conn.y2" stroke="#999"
+                stroke-width="0.5" />
+            <text *ngIf="conn.name" [attr.x]="(conn.x1 + conn.x2) / 2" [attr.y]="(conn.y1 + conn.y2) / 2"
+                text-anchor="middle" dominant-baseline="middle" font-size="1.5" fill="#666"
+                style="background-color: white;">
+                {{ conn.name }}
+            </text>
+        </g>
+
+        <g *ngFor="let service of services">
+            <circle [attr.cx]="service.x" [attr.cy]="service.y" r="4" fill="#3f51b5" opacity="0.7">
                 <title>{{ service.name }}</title>
             </circle>
-            <text [attr.x]="(i % 10) * 10 + 5" [attr.y]="Math.floor(i / 10) * 10 + 5" text-anchor="middle"
-                dominant-baseline="middle" font-size="2" fill="white" pointer-events="none">
+            <text [attr.x]="service.x" [attr.y]="service.y" text-anchor="middle" dominant-baseline="middle"
+                font-size="2" fill="white" pointer-events="none">
                 {{ service.name }}
             </text>
         </g>

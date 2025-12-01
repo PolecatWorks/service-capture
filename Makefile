@@ -2,6 +2,7 @@
 
 
 BE_DIR := backend
+IMAGE_NAME := service-capture
 
 status-ports:
 	@lsof -i tcp:8080
@@ -14,6 +15,14 @@ backend-dev:
 
 backend-test:
 	cd ${BE_DIR} && cargo watch --ignore test_data -x "test"
+
+backend-docker: PKG_NAME=service-capture
+backend-docker:
+	{ \
+	docker build ${BE_DIR} -t $(IMAGE_NAME)-backend -f ${BE_DIR}/Dockerfile --build-arg PKG_NAME=${PKG_NAME}; \
+	docker image ls $(IMAGE_NAME)-backend; \
+	}
+
 
 
 backend-app-auth:

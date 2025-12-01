@@ -3,21 +3,19 @@ pub mod services;
 pub mod users;
 
 use axum::{
-    Json, Router,
-    extract::{FromRequest, MatchedPath, State},
+    Router,
+    extract::{FromRequest, MatchedPath},
     response::{IntoResponse, Response},
-    routing::{get, post},
+    routing::get,
 };
-use axum_prometheus::{
-    GenericMetricLayer, PrometheusMetricLayer, metrics_exporter_prometheus::PrometheusBuilder,
-};
+use axum_prometheus::PrometheusMetricLayer;
 use reqwest::StatusCode;
 use tower_http::trace::{DefaultOnFailure, DefaultOnRequest, DefaultOnResponse, TraceLayer};
 use tracing::{Level, info};
 
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use sqlx::{Pool, Postgres, types::Decimal};
-use std::{mem, net::SocketAddr, sync::Arc};
+use std::net::SocketAddr;
 use tokio_util::sync::CancellationToken;
 
 use crate::{MyState, error::MyError, webserver::users::User};
@@ -123,12 +121,6 @@ impl Default for WebServiceConfig {
             forwarding_headers: vec![],
         }
     }
-}
-
-// Handler for GET /messages
-async fn list_messages(State(state): State<MyState>) -> impl IntoResponse {
-    info!("Handling list_messages request");
-    Json(vec!["Hello from the server!".to_string()])
 }
 
 // // Handler for POST /messages

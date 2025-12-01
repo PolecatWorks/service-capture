@@ -1,6 +1,6 @@
-use std::{ffi::c_void, sync::{Arc, RwLock}};
+use std::{ffi::c_void, sync::Arc};
 
-use axum_prometheus::{metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle}, PrometheusMetricLayer};
+use axum_prometheus::metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
 use hamsrs::Hams;
 use prometheus::{IntGauge, Registry};
 use tokio::sync::Mutex;
@@ -11,7 +11,7 @@ use crate::{
     webserver::start_app_api,
 };
 
-use metrics::{prometheus_response, prometheus_response_mystate, prometheus_response_free};
+use metrics::{prometheus_response_free, prometheus_response_mystate};
 
 pub mod config;
 pub mod error;
@@ -41,7 +41,6 @@ impl MyState {
         let db_state = PersistenceState::new(&config.persistence).await?;
         let registry = Registry::new();
 
-
         let hello_counter = IntGauge::new("my_counter", "A counter for my application")?;
         registry.register(Box::new(hello_counter.clone()))?;
 
@@ -54,7 +53,6 @@ impl MyState {
             .install_recorder()
             .unwrap();
 
-
         Ok(MyState {
             config: config.clone(),
             db_state,
@@ -63,7 +61,6 @@ impl MyState {
             registry,
             // prometheus_handle: Arc::new(RwLock::new(None)),
             prometheus_handle: Arc::new(metric_handle),
-
         })
     }
 }
@@ -75,8 +72,6 @@ pub fn service_start(config: &MyConfig) -> Result<(), MyError> {
 }
 
 pub async fn service_cancellable(ct: CancellationToken, config: &MyConfig) -> Result<(), MyError> {
-
-
     let state = MyState::new(config).await?;
 
     let pool_pg = state.db_state.pool_pg.clone();
@@ -99,7 +94,7 @@ pub async fn service_cancellable(ct: CancellationToken, config: &MyConfig) -> Re
 
     hams.start().unwrap();
 
-    let server = start_app_api(state.clone(), pool_pg, ct.clone() );
+    let server = start_app_api(state.clone(), pool_pg, ct.clone());
 
     server.await?;
 

@@ -7,7 +7,7 @@ use ::parquet::file::writer::SerializedFileWriter;
 use parquet::generate_parquet_schema_from_table;
 use serde::Deserialize;
 use sqlx::Row;
-use sqlx::{postgres::PgPoolOptions, Column, Executor, PgPool};
+use sqlx::{Column, Executor, PgPool, postgres::PgPoolOptions};
 use std::time::Duration;
 use tokio_util::sync::CancellationToken;
 use tracing::{debug, info, warn};
@@ -114,8 +114,6 @@ pub async fn db_migrate(ct: CancellationToken, config: &PersistenceConfig) -> Re
     let state = PersistenceState::new(config).await?;
 
     let pool = state.pool_pg.clone();
-
-    let select_reply = sqlx::query("SELECT 1").fetch_one(&pool).await?;
 
     // Run migrations
     // sqlx::migrate!() macro finds the migrations folder relative to Cargo.toml

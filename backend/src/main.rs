@@ -1,7 +1,6 @@
 use std::{path::PathBuf, process::ExitCode};
 
 use clap::{Parser, Subcommand};
-use env_logger::Env;
 
 // use ffi_log2::log_param;
 // use hamsrs::hams_logger_init;
@@ -99,8 +98,8 @@ fn main() -> Result<ExitCode, MyError> {
     let args = Args::parse();
     match args.command {
         Commands::Version => {
-            info!("Version: {NAME}:{VERSION}");
-            // info!("HaMs Version: {}", hamsrs::hams_version());
+            println!("Version: {NAME}:{VERSION}");
+            println!("HaMs Version: {}", hamsrs::hams_version());
         }
         Commands::Start { config, secrets } => {
             info!("Starting {NAME}:{VERSION}");

@@ -18,7 +18,7 @@ pub async fn generate_parquet_schema_from_table(
     table_name: &str,
 ) -> Result<Arc<Type>, MyError> {
     // Describe the table structure using SQLx
-    let describe_query = format!("SELECT * FROM {} LIMIT 0", table_name);
+    let describe_query = format!("SELECT * FROM {table_name} LIMIT 0");
     let describe = pool.describe(&describe_query).await?;
 
     // Build the Parquet schema
@@ -27,7 +27,7 @@ pub async fn generate_parquet_schema_from_table(
     for column in describe.columns() {
         let field_type = column.type_info();
 
-        let field = match column.type_info().to_string().as_str() {
+        let field = match field_type.to_string().as_str() {
             "INT4" | "INT8" => Type::primitive_type_builder(column.name(), BasicType::INT64)
                 .with_repetition(Repetition::REQUIRED)
                 .build()?,

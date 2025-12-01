@@ -3,11 +3,10 @@ use axum::http::StatusCode;
 use axum::{
     Router,
     extract::{Path, State},
-    response::{IntoResponse, Response},
+    response::IntoResponse,
     routing::{get, post},
 };
 use serde::{Deserialize, Serialize};
-use sqlx::Row;
 
 use crate::webserver::{ListPages, PageOptions};
 use crate::{

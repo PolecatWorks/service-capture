@@ -1,14 +1,12 @@
-use std::sync::Arc;
-
 use axum::http::StatusCode;
 use axum::{
-    Json, Router,
-    extract::{FromRequest, Path, Query, State},
-    response::{IntoResponse, Response},
+    Router,
+    extract::{Path, Query, State},
+    response::IntoResponse,
     routing::{get, post},
 };
 use serde::{Deserialize, Serialize};
-use tracing::{Level, info};
+use tracing::info;
 
 use crate::{
     MyState,

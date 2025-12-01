@@ -1,5 +1,10 @@
 <div class="service-view-container">
-    <svg class="service-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+    <div class="toolbar">
+        <button (click)="save()" [disabled]="!hasChanges">Save</button>
+        <button (click)="reset()" [disabled]="!hasChanges">Reset</button>
+    </div>
+    <svg class="service-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" (mousemove)="onMouseMove($event)"
+        (mouseup)="onMouseUp()" (mouseleave)="onMouseLeave()">
         <!-- Draw connections first so they are behind the nodes -->
         <g *ngFor="let conn of connections">
             <line [attr.x1]="conn.x1" [attr.y1]="conn.y1" [attr.x2]="conn.x2" [attr.y2]="conn.y2" stroke="#999"
@@ -11,7 +16,8 @@
             </text>
         </g>
 
-        <g *ngFor="let service of services">
+        <g *ngFor="let service of services" (mousedown)="onMouseDown($event, service)" class="service-node"
+            [class.dragging]="draggingService === service">
             <circle [attr.cx]="service.x" [attr.cy]="service.y" r="4" fill="#3f51b5" opacity="0.7">
                 <title>{{ service.name }}</title>
             </circle>

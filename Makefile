@@ -2,6 +2,7 @@
 
 
 BE_DIR := backend
+FE_DIR := frontend
 IMAGE_NAME := service-capture
 
 status-ports:
@@ -23,6 +24,10 @@ backend-docker:
 	docker image ls $(IMAGE_NAME)-backend; \
 	}
 
+backend-docker-run: backend-docker
+	docker run -it --rm --name $(IMAGE_NAME)-backend -p 8080:8080 --mount type=bind,src=$(PWD)/${BE_DIR}/test-data,dst=/test-data  \
+	-e APP_PERSISTENCE__DB__CONNECTION__URL=postgres://host.docker.internal:5432/service-capture \
+	$(IMAGE_NAME)-backend start --config /test-data/config-localhost.yaml --secrets /test-data/secrets
 
 
 backend-app-auth:
@@ -65,3 +70,13 @@ db-schema-revert:
 
 frontend-dev:
 	cd frontend && ng serve
+
+frontend-docker: PKG_NAME=service-capture
+frontend-docker:
+	{ \
+	docker build ${FE_DIR} -t $(IMAGE_NAME)-frontend -f ${FE_DIR}/Dockerfile --build-arg PKG_NAME=${PKG_NAME}; \
+	docker image ls $(IMAGE_NAME)-frontend; \
+	}
+
+frontend-docker-run: frontend-docker
+	docker run -it --rm -p 4201:8080 --name $(IMAGE_NAME)-frontend $(IMAGE_NAME)-frontend

@@ -35,3 +35,14 @@ The app will be deployed to a Kubernetes cluster.
 - Kubernetes
 
 # Getting Started
+
+If you have Make installed, you can use the following commands to get started:
+
+    make db-local
+    make backend-dev
+    make frontend-dev
+
+Or with Docker:
+    make db-docker
+    make backend-docker-run
+    make frontend-docker-run

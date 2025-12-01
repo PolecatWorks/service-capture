@@ -107,7 +107,13 @@ fn main() -> Result<ExitCode, MyError> {
 
             hams_logger_init(log_param()).unwrap();
 
-            let config_yaml = std::fs::read_to_string(config.clone())?;
+            let config_yaml = match std::fs::read_to_string(config.clone()) {
+                Ok(content) => content,
+                Err(e) => {
+                    error!("Failed to read config file {:?}: {}", config, e);
+                    return Err(MyError::Io(e));
+                }
+            };
 
             let config: MyConfig = MyConfig::figment(&config_yaml, secrets)
                 .extract()
@@ -119,7 +125,10 @@ fn main() -> Result<ExitCode, MyError> {
             debug!("Loaded config {:?}", config);
 
             if config.persistence.db.automigrate {
-                info!("Auto-migrating database");
+                info!(
+                    "Auto-migrating database: {}",
+                    config.persistence.db.connection.url
+                );
                 start_db_migrate(&config.persistence)?;
             }
 

@@ -60,8 +60,8 @@
 use std::path::Path;
 
 use figment::{
-    providers::{Format, Yaml},
     Figment,
+    providers::{Env, Format, Yaml},
 };
 use figment_file_provider_adapter::FileAdapter;
 use hamsrs::hams::config::HamsConfig;
@@ -106,7 +106,9 @@ impl MyConfig {
     // Note the `nested` option on both `file` providers. This makes each
     // top-level dictionary act as a profile.
     pub fn figment<P: AsRef<Path> + Clone>(yaml_string: &str, secrets: P) -> Figment {
-        Figment::new().merge(FileAdapter::wrap(Yaml::string(yaml_string)).relative_to_dir(secrets))
+        Figment::new()
+            .merge(FileAdapter::wrap(Yaml::string(yaml_string)).relative_to_dir(secrets))
+            .merge(Env::prefixed("APP_").split("__"))
     }
 }
 

@@ -5,13 +5,9 @@ import { DependenciesService } from '../../services/dependencies.service';
 import { Service } from '../../structs/service';
 import { Dependency } from '../../structs/dependency';
 import { PageOptions } from '../../services/pagination';
+import { LayoutService, ServiceNode } from '../../services/layout.service';
 
-interface ServiceNode extends Service {
-    x: number;
-    y: number;
-    originalX: number;
-    originalY: number;
-}
+
 
 interface Connection {
     x1: number;
@@ -42,7 +38,8 @@ export class ServiceViewComponent implements OnInit {
 
     constructor(
         private servicesService: ServicesService,
-        private dependenciesService: DependenciesService
+        private dependenciesService: DependenciesService,
+        private layoutService: LayoutService
     ) { }
 
     ngOnInit(): void {
@@ -53,17 +50,7 @@ export class ServiceViewComponent implements OnInit {
         };
 
         this.servicesService.getPagedDetail(pageOptions).subscribe(page => {
-            this.services = page.ids.map((service, i) => {
-                const x = service.x ?? (i % 5) * 20 + 10;
-                const y = service.y ?? Math.floor(i / 5) * 20 + 10;
-                return {
-                    ...service,
-                    x,
-                    y,
-                    originalX: x,
-                    originalY: y
-                };
-            });
+            this.services = this.layoutService.calculatePositions(page.ids);
 
             this.dependenciesService.getPagedDetail(pageOptions).subscribe(depPage => {
                 this.dependencies = depPage.ids;

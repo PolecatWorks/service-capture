@@ -27,6 +27,7 @@ interface Connection {
 export class ServiceViewComponent implements OnInit {
     services: ServiceNode[] = [];
     connections: Connection[] = [];
+    viewBox = '0 0 100 100';
     Math = Math;
 
     // Drag state
@@ -51,6 +52,7 @@ export class ServiceViewComponent implements OnInit {
 
         this.servicesService.getPagedDetail(pageOptions).subscribe(page => {
             this.services = this.layoutService.calculatePositions(page.ids);
+            this.updateViewBox();
 
             this.dependenciesService.getPagedDetail(pageOptions).subscribe(depPage => {
                 this.dependencies = depPage.ids;
@@ -130,6 +132,38 @@ export class ServiceViewComponent implements OnInit {
         if (this.dependencies) {
             this.calculateConnections(this.dependencies);
         }
+        this.updateViewBox();
+    }
+
+    updateViewBox() {
+        if (this.services.length === 0) {
+            this.viewBox = '0 0 100 100';
+            return;
+        }
+
+        let minX = Infinity;
+        let minY = Infinity;
+        let maxX = -Infinity;
+        let maxY = -Infinity;
+
+        this.services.forEach(s => {
+            minX = Math.min(minX, s.x);
+            minY = Math.min(minY, s.y);
+            maxX = Math.max(maxX, s.x);
+            maxY = Math.max(maxY, s.y);
+        });
+
+        // Add padding
+        const padding = 20;
+        minX -= padding;
+        minY -= padding;
+        maxX += padding;
+        maxY += padding;
+
+        const width = Math.max(100, maxX - minX);
+        const height = Math.max(100, maxY - minY);
+
+        this.viewBox = `${minX} ${minY} ${width} ${height}`;
     }
 
     // Store dependencies to re-calculate connections

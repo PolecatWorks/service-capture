@@ -13,7 +13,7 @@ export interface ServiceNode extends Service {
 })
 export class LayoutService {
     private readonly GRID_SIZE = 20;
-    private readonly COLS = 10; // Adjust based on expected screen width / grid size
+    private readonly COLS = 5; // Adjust based on expected screen width / grid size
 
     constructor() { }
 

@@ -1,0 +1,14 @@
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ include "service-capture-backend.fullname" . }}
+  labels:
+    {{- include "service-capture-backend.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "service-capture-backend.selectorLabels" . | nindent 6 }}
+  action: ALLOW
+  rules:
+  {{-  tpl (toYaml .Values.devsecops.AuthorizationPolicy.rules) . | nindent 4 }}

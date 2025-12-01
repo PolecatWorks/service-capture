@@ -1,0 +1,6 @@
+apiVersion: v2
+name: service-capture-backend
+description: Backend for Service Capture
+version: 0.0.0
+appVersion: 0.2.0
+dependencies: []

@@ -1,0 +1,15 @@
+---
+apiVersion: "security.istio.io/v1beta1"
+kind: RequestAuthentication
+metadata:
+  name: {{ include "service-capture-backend.fullname" . }}
+  labels:
+    {{- include "service-capture-backend.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "service-capture-backend.selectorLabels" . | nindent 6 }}
+  #   peers:
+  #   - mtls: {}
+  jwtRules:
+  {{-  tpl (toYaml .Values.devsecops.RequestAuthentication.jwtRules) . | nindent 4 }}

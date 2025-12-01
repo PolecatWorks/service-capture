@@ -27,15 +27,28 @@ interface Connection {
 export class ServiceViewComponent implements OnInit {
     services: ServiceNode[] = [];
     connections: Connection[] = [];
-    viewBox = '0 0 100 100';
+
+    // ViewBox state
+    vbX = 0;
+    vbY = 0;
+    vbW = 100;
+    vbH = 100;
+
+    get viewBox(): string {
+        return `${this.vbX} ${this.vbY} ${this.vbW} ${this.vbH}`;
+    }
+
     Math = Math;
 
     // Drag state
     draggingService: ServiceNode | null = null;
+    isPanning = false;
     dragStartX = 0;
     dragStartY = 0;
     initialServiceX = 0;
     initialServiceY = 0;
+    initialVbX = 0;
+    initialVbY = 0;
 
     constructor(
         private servicesService: ServicesService,
@@ -80,47 +93,103 @@ export class ServiceViewComponent implements OnInit {
     }
 
     // Drag and Drop Handlers
-    onMouseDown(event: MouseEvent, service: ServiceNode) {
-        this.draggingService = service;
+    onMouseDown(event: MouseEvent, service?: ServiceNode) {
         this.dragStartX = event.clientX;
         this.dragStartY = event.clientY;
-        this.initialServiceX = service.x;
-        this.initialServiceY = service.y;
-        event.stopPropagation(); // Prevent event bubbling
+
+        if (service) {
+            this.draggingService = service;
+            this.initialServiceX = service.x;
+            this.initialServiceY = service.y;
+            event.stopPropagation(); // Prevent event bubbling to SVG background
+        } else {
+            this.isPanning = true;
+            this.initialVbX = this.vbX;
+            this.initialVbY = this.vbY;
+        }
     }
 
     onMouseMove(event: MouseEvent) {
         if (this.draggingService) {
-            const dx = (event.clientX - this.dragStartX) / this.getSvgScale(event); // Adjust for SVG scaling if needed
-            const dy = (event.clientY - this.dragStartY) / this.getSvgScale(event);
+            // We need to map screen delta to SVG coordinates delta
+            // The scale factor is vbW / svgWidth
+            const svgElement = (event.target as Element).closest('svg');
+            if (!svgElement) return;
+
+            const rect = svgElement.getBoundingClientRect();
+            const scaleX = this.vbW / rect.width;
+            const scaleY = this.vbH / rect.height;
+
+            const dx = (event.clientX - this.dragStartX) * scaleX;
+            const dy = (event.clientY - this.dragStartY) * scaleY;
 
             this.draggingService.x = this.initialServiceX + dx;
             this.draggingService.y = this.initialServiceY + dy;
 
             // Update connections
             this.updateConnections();
+        } else if (this.isPanning) {
+            const svgElement = (event.target as Element).closest('svg');
+            if (!svgElement) return;
+
+            const rect = svgElement.getBoundingClientRect();
+            const scaleX = this.vbW / rect.width;
+            const scaleY = this.vbH / rect.height;
+
+            const dx = (event.clientX - this.dragStartX) * scaleX;
+            const dy = (event.clientY - this.dragStartY) * scaleY;
+
+            this.vbX = this.initialVbX - dx;
+            this.vbY = this.initialVbY - dy;
         }
     }
 
     onMouseUp() {
         this.draggingService = null;
+        this.isPanning = false;
     }
 
     onMouseLeave() {
         this.draggingService = null;
+        this.isPanning = false;
     }
 
-    // Helper to handle SVG scaling if the SVG is responsive and not 1:1 with screen pixels
-    // For now, assuming 1:1 or handling via viewBox mapping could be complex.
-    // A simple approximation if viewBox is 100x100 and mapped to screen size:
-    private getSvgScale(event: MouseEvent): number {
+    onWheel(event: WheelEvent) {
+        event.preventDefault();
+
+        const zoomSpeed = 0.001;
+        const delta = event.deltaY;
+        const scale = 1 + delta * zoomSpeed;
+
+        // Limit zoom
+        if (this.vbW * scale < 10 || this.vbW * scale > 10000) return;
+
         const svgElement = (event.target as Element).closest('svg');
-        if (svgElement) {
-            const rect = svgElement.getBoundingClientRect();
-            // viewBox width is 100
-            return rect.width / 100;
-        }
-        return 1;
+        if (!svgElement) return;
+
+        const rect = svgElement.getBoundingClientRect();
+
+        // Mouse position relative to SVG
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+
+        // Mouse position in SVG coordinates (before zoom)
+        const svgX = this.vbX + (mouseX / rect.width) * this.vbW;
+        const svgY = this.vbY + (mouseY / rect.height) * this.vbH;
+
+        // Update width and height
+        const newW = this.vbW * scale;
+        const newH = this.vbH * scale;
+
+        // Update x and y to keep the point under mouse stationary
+        // newSvgX = newVbX + (mouseX / rect.width) * newW
+        // We want newSvgX == svgX
+        // newVbX = svgX - (mouseX / rect.width) * newW
+
+        this.vbX = svgX - (mouseX / rect.width) * newW;
+        this.vbY = svgY - (mouseY / rect.height) * newH;
+        this.vbW = newW;
+        this.vbH = newH;
     }
 
     updateConnections() {
@@ -137,7 +206,10 @@ export class ServiceViewComponent implements OnInit {
 
     updateViewBox() {
         if (this.services.length === 0) {
-            this.viewBox = '0 0 100 100';
+            this.vbX = 0;
+            this.vbY = 0;
+            this.vbW = 100;
+            this.vbH = 100;
             return;
         }
 
@@ -160,10 +232,10 @@ export class ServiceViewComponent implements OnInit {
         maxX += padding;
         maxY += padding;
 
-        const width = Math.max(100, maxX - minX);
-        const height = Math.max(100, maxY - minY);
-
-        this.viewBox = `${minX} ${minY} ${width} ${height}`;
+        this.vbX = minX;
+        this.vbY = minY;
+        this.vbW = Math.max(100, maxX - minX);
+        this.vbH = Math.max(100, maxY - minY);
     }
 
     // Store dependencies to re-calculate connections

@@ -4,7 +4,8 @@
         <button (click)="reset()" [disabled]="!hasChanges">Reset</button>
     </div>
     <svg class="service-svg" [attr.viewBox]="viewBox" preserveAspectRatio="xMidYMid meet"
-        (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp()" (mouseleave)="onMouseLeave()">
+        (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp()" (mouseleave)="onMouseLeave()"
+        (wheel)="onWheel($event)" (mousedown)="onMouseDown($event)">
         <!-- Draw connections first so they are behind the nodes -->
         <g *ngFor="let conn of connections">
             <line [attr.x1]="conn.x1" [attr.y1]="conn.y1" [attr.x2]="conn.x2" [attr.y2]="conn.y2" stroke="#999"

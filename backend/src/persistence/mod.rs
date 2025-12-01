@@ -81,7 +81,7 @@ pub async fn db_count_records(
 
     let pool_pg = state.pool_pg.clone();
 
-    let select_reply = sqlx::query("SELECT 1").fetch_one(&pool_pg).await?;
+    let _select_reply = sqlx::query("SELECT 1").fetch_one(&pool_pg).await?;
 
     // iterate over tables called users,logs and count the number of records in each
 

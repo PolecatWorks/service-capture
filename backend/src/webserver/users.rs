@@ -192,7 +192,7 @@ pub async fn delete(
 ) -> Result<impl IntoResponse, MyError> {
     let user = sqlx::query_as::<_, User>(
         r#"
-        DELETE FROM users§
+        DELETE FROM users
         WHERE id = $1
         RETURNING *
         "#,

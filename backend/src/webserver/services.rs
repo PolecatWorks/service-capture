@@ -21,6 +21,9 @@ pub struct Service {
     pub id: Option<DbBigSerial>,
     pub name: String,
     pub p99_millis: i32,
+    pub p95_millis: i32,
+    pub availability: f64,
+    pub throughput_rps: i32,
     #[serde(default)]
     pub x: Option<i32>,
     #[serde(default)]
@@ -40,7 +43,7 @@ async fn list(
     let options = PageOptions::defaulting(options);
 
     let items = sqlx::query_as::<_, Service>(
-        r#"SELECT id, name, p99_millis, x, y FROM services
+        r#"SELECT id, name, p99_millis, p95_millis, availability, throughput_rps, x, y FROM services
         LIMIT $1 OFFSET $2
         "#,
     )
@@ -62,10 +65,13 @@ async fn create(
     AppJson(payload): AppJson<Service>,
 ) -> Result<impl IntoResponse, MyError> {
     let service = sqlx::query_as::<_, Service>(
-        "INSERT INTO services (name, p99_millis, x, y) VALUES ($1, $2, $3, $4) RETURNING *",
+        "INSERT INTO services (name, p99_millis, p95_millis, availability, throughput_rps, x, y) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
     )
     .bind(payload.name)
     .bind(payload.p99_millis)
+    .bind(payload.p95_millis)
+    .bind(payload.availability)
+    .bind(payload.throughput_rps)
     .bind(payload.x)
     .bind(payload.y)
     .fetch_one(&state.db_state.pool_pg)
@@ -101,7 +107,7 @@ async fn update(
     let service = sqlx::query_as::<_, Service>(
         r#"
         UPDATE services
-        SET name = $2, p99_millis = $3, x = $4, y = $5
+        SET name = $2, p99_millis = $3, p95_millis = $4, availability = $5, throughput_rps = $6, x = $7, y = $8
         WHERE id = $1
         RETURNING *
         "#,
@@ -109,6 +115,9 @@ async fn update(
     .bind(id)
     .bind(&payload.name)
     .bind(payload.p99_millis)
+    .bind(payload.p95_millis)
+    .bind(payload.availability)
+    .bind(payload.throughput_rps)
     .bind(payload.x)
     .bind(payload.y)
     .fetch_one(&state.db_state.pool_pg)
@@ -121,7 +130,7 @@ async fn delete(
     State(state): State<MyState>,
     Path(id): Path<DbBigSerial>,
 ) -> Result<AppJson<Service>, MyError> {
-    let service = sqlx::query_as::<_, Service>("SELECT * FROM services WHERE id = $1 RETURNING *")
+    let service = sqlx::query_as::<_, Service>("DELETE FROM services WHERE id = $1 RETURNING *")
         .bind(id)
         .fetch_one(&state.db_state.pool_pg)
         .await?;

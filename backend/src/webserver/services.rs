@@ -130,7 +130,7 @@ async fn delete(
     State(state): State<MyState>,
     Path(id): Path<DbBigSerial>,
 ) -> Result<AppJson<Service>, MyError> {
-    let service = sqlx::query_as::<_, Service>("SELECT * FROM services WHERE id = $1 RETURNING *")
+    let service = sqlx::query_as::<_, Service>("DELETE FROM services WHERE id = $1 RETURNING *")
         .bind(id)
         .fetch_one(&state.db_state.pool_pg)
         .await?;

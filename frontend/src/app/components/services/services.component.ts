@@ -44,4 +44,15 @@ export class ServicesComponent implements AfterViewInit {
 
 
 
+  delete(id: number) {
+    if (confirm('Are you sure you want to delete this service?')) {
+      this.servicesService.delete(id).subscribe({
+        next: () => {
+          this.data.fetch(0);
+        },
+        error: (err) => console.error('Error deleting service:', err)
+      });
+    }
+  }
+
 }

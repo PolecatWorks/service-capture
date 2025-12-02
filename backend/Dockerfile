@@ -33,7 +33,6 @@ COPY --from=sofile /usr/local/lib/libhams.so /usr/local/lib/
 RUN ldconfig
 ENV RUSTFLAGS="-L /usr/local/lib/"
 COPY . .
-RUN ls /usr/local/lib/; file /usr/local/lib/libhams.so; stophere
 
 RUN cargo build --release
 

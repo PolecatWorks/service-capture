@@ -31,9 +31,9 @@ FROM ghcr.io/polecatworks/hams:main AS sofile
 
 FROM buildcacherelease AS build
 COPY --from=sofile /usr/local/lib/libhams.so /usr/local/lib/
-
-COPY . .
+RUN ldconfig
 ENV RUSTFLAGS="-L /usr/local/lib/"
+COPY . .
 RUN cargo build --release
 
 # We do not need the Rust toolchain to run the binary!

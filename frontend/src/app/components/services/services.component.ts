@@ -19,7 +19,7 @@ import { PageOptions } from '../../services/pagination';
   styleUrl: './services.component.scss',
 })
 export class ServicesComponent implements AfterViewInit {
-  displayedColumns: string[] = ['id', 'name', 'p99_millis', 'actions'];
+  displayedColumns: string[] = ['id', 'name', 'p99_millis', 'p95_millis', 'availability', 'throughput_rps', 'actions'];
   data: PaginationDataSource<Service>;
 
   constructor(private servicesService: ServicesService) {

@@ -14,6 +14,21 @@
         </mat-form-field>
 
         <mat-form-field>
+            <mat-label>P95 (ms)</mat-label>
+            <input matInput type="number" [(ngModel)]="service.p95_millis" name="p95_millis" required />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Availability (%)</mat-label>
+            <input matInput type="number" [(ngModel)]="service.availability" name="availability" required />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Throughput (rps)</mat-label>
+            <input matInput type="number" [(ngModel)]="service.throughput_rps" name="throughput_rps" required />
+        </mat-form-field>
+
+        <mat-form-field>
             <mat-label>X Coordinate</mat-label>
             <input matInput type="number" [(ngModel)]="service.x" name="x" />
         </mat-form-field>

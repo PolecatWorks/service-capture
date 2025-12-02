@@ -20,7 +20,7 @@ backend-test:
 backend-docker: PKG_NAME=service-capture
 backend-docker:
 	{ \
-	docker build ${BE_DIR} -t $(IMAGE_NAME)-backend -f ${BE_DIR}/Dockerfile --build-arg PKG_NAME=${PKG_NAME}; \
+	docker buildx build ${BE_DIR} -t $(IMAGE_NAME)-backend -f ${BE_DIR}/Dockerfile; \
 	docker image ls $(IMAGE_NAME)-backend; \
 	}
 

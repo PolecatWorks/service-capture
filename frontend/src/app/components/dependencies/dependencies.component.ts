@@ -37,4 +37,15 @@ export class DependenciesComponent implements AfterViewInit {
   }
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  delete(id: number) {
+    if (confirm('Are you sure you want to delete this dependency?')) {
+      this.dependenciesService.delete(id).subscribe({
+        next: () => {
+          this.data.fetch(0);
+        },
+        error: (err) => console.error('Error deleting dependency:', err)
+      });
+    }
+  }
 }

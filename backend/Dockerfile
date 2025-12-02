@@ -29,7 +29,8 @@ FROM ghcr.io/polecatworks/hams:main AS sofile
 # This is a dummy stage to get the shared object file
 
 FROM buildcacherelease AS build
-COPY --from=sofile /usr/local/lib/libhams.so /usr/local/lib/
+COPY --from=sofile /usr/local/lib/libhams.so* /usr/local/lib/
+RUN ls -la /usr/local/lib
 RUN ldconfig
 ENV RUSTFLAGS="-L /usr/local/lib/"
 COPY . .
@@ -41,7 +42,7 @@ FROM debian:trixie-slim AS runtime
 # https://github.com/GoogleContainerTools/distroless
 # FROM gcr.io/distroless/cc-debian12 as runtime
 WORKDIR /app
-COPY --from=sofile /usr/local/lib/libhams.so /usr/local/lib/
+COPY --from=sofile /usr/local/lib/libhams.so* /usr/local/lib/
 RUN ldconfig
 COPY --from=build /app/target/release/service-capture /usr/local/bin/
 

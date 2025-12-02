@@ -16,5 +16,8 @@ fn main() {
 
     #[cfg(target_os = "linux")]
     println!("cargo:rustc-link-arg=-Wl,-rpath,$ORIGIN/../lib");
+
+    #[cfg(target_os = "linux")]
+    println!("cargo:rustc-link-search=native=/usr/local/lib");
 }
 // rustflags = ["-C", "link-args=-Wl,-rpath,$ORIGIN/../lib/"]

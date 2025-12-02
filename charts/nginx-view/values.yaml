@@ -69,8 +69,6 @@ tolerations: []
 
 affinity: {}
 
-global: {} # TODO: Work to remove this
-
 config:
   configs: {} # Note: Defaults provided in config/configs directory
   contents: {} # Note: Defaults provided in config/contents directory

@@ -16,7 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './users.component.scss',
 })
 export class UsersComponent implements AfterViewInit {
-  displayedColumns: string[] = ['forename', 'surname'];
+  displayedColumns: string[] = ['forename', 'surname', 'actions'];
   data: PaginationDataSource<User>;
 
   constructor(private usersService: UsersService) {
@@ -51,5 +51,16 @@ export class UsersComponent implements AfterViewInit {
         // this.userIds = -1;
       },
     });
+  }
+
+  delete(id: number) {
+    if (confirm('Are you sure you want to delete this user?')) {
+      this.usersService.delete(id).subscribe({
+        next: () => {
+          this.data.fetch(0);
+        },
+        error: (err) => console.error('Error deleting user:', err)
+      });
+    }
   }
 }

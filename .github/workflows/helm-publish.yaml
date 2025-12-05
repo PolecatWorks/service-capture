@@ -11,7 +11,7 @@ on:
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
     paths:
-      - 'helm/**'
+      - 'charts/**'
   # pull_request:
   #   branches: [ "main" ]
 
@@ -43,7 +43,7 @@ jobs:
           SHORTER_REPO=${GITHUB_REPOSITORY%:*}
           echo "repository=${SHORTER_REPO@L}" >> $GITHUB_OUTPUT
 
-      - name: Push Helm chart to OCI compatible registry (Github)
+      - name: Push service-capture-backend Helm chart to OCI compatible registry (Github)
         uses: bsord/helm-push@v4.1.0
         with:
           chart-folder: chart/service-capture-backend
@@ -53,6 +53,18 @@ jobs:
           username: ${{ github.actor }}
           access-token: ${{ secrets.GITHUB_TOKEN }}
           force: true
+
+      - name: Push nginx-view Helm chart to OCI compatible registry (Github)
+        uses: bsord/helm-push@v4.1.0
+        with:
+          chart-folder: chart/nginx-view
+          useOCIRegistry: true
+          # registry-url:  oci://ghcr.io/${{ github.repository }}-helm
+          registry-url:  oci://ghcr.io/${{ steps.lower-repo.outputs.repository }}/helm
+          username: ${{ github.actor }}
+          access-token: ${{ secrets.GITHUB_TOKEN }}
+          force: true
+
 
       # - name: Helm Publish Action
       #   uses: huggingface/helm-publish-action@latest

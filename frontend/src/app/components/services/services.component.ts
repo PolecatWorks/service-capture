@@ -19,7 +19,7 @@ import { PageOptions } from '../../services/pagination';
   styleUrl: './services.component.scss',
 })
 export class ServicesComponent implements AfterViewInit {
-  displayedColumns: string[] = ['id', 'name', 'p99_millis', 'actions'];
+  displayedColumns: string[] = ['id', 'name', 'p99_millis', 'p95_millis', 'availability', 'throughput_rps', 'actions'];
   data: PaginationDataSource<Service>;
 
   constructor(private servicesService: ServicesService) {
@@ -43,5 +43,16 @@ export class ServicesComponent implements AfterViewInit {
 
 
 
+
+  delete(id: number) {
+    if (confirm('Are you sure you want to delete this service?')) {
+      this.servicesService.delete(id).subscribe({
+        next: () => {
+          this.data.fetch(0);
+        },
+        error: (err) => console.error('Error deleting service:', err)
+      });
+    }
+  }
 
 }

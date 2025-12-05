@@ -1,0 +1,19 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: app
+spec:
+  hosts:
+  - app.k8s
+  gateways:
+  - istio-ingress/k8s-gateway
+  - mesh # applies to all the sidecars in the mesh
+  http:
+  - name: app-be
+    match:
+      - uri:
+          prefix: /app/v0
+    route:
+    - destination:
+        host: app-be

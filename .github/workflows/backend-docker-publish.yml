@@ -12,6 +12,7 @@ on:
     tags: ["v*.*.*"]
     paths:
       - "backend/**"
+      - ".github/workflows/backend-docker-publish.yml"
   pull_request:
     branches: ["main"]
 

@@ -15,6 +15,9 @@ on:
       - ".github/workflows/backend-docker-publish.yml"
   pull_request:
     branches: ["main"]
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-docker-publish.yml"
 
 env:
   # Use docker.io for Docker Hub if empty

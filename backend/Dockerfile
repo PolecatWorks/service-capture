@@ -2,7 +2,7 @@
 # RUN cargo install cargo-chef
 FROM lukemathwalker/cargo-chef:latest-rust-1 AS chef
 
-WORKDIR app
+WORKDIR /app
 
 FROM chef AS planner
 COPY . .
@@ -39,7 +39,7 @@ RUN cargo build --release
 FROM debian:trixie-slim AS runtime
 # https://github.com/GoogleContainerTools/distroless
 # FROM gcr.io/distroless/cc-debian12 as runtime
-WORKDIR app
+WORKDIR /app
 COPY --from=sofile /usr/local/lib/libhams.so /usr/local/lib/
 RUN ldconfig
 COPY --from=build /app/target/release/service-capture /usr/local/bin/

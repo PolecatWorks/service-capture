@@ -53,7 +53,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Prepare environment for current platform
+      - &prepare_step
+        name: Prepare environment for current platform
         # This step sets up the environment for the current platform being built.
         # It replaces the '/' character in the platform name with '-' and sets it as an environment variable.
         # This is useful for naming artifacts and other resources that cannot contain '/'.
@@ -159,6 +160,7 @@ jobs:
       # This job depends on the build job to complete before it starts.
       # It ensures that the Docker images for all platforms are built before merging the manifests.
     steps:
+      - *prepare_step
       - name: Download digests
         # This step downloads the digest files uploaded in the build job.
         # It uses the actions/download-artifact action to download the artifacts with the pattern digests-*.
@@ -224,7 +226,7 @@ jobs:
             --annotation='index:org.opencontainers.image.created=${{ steps.timestamp.outputs.timestamp }}' \
             --annotation='index:org.opencontainers.image.url=${{ github.event.repository.url }}' \
             --annotation='index:org.opencontainers.image.source=${{ github.event.repository.url }}' \
-            $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
+            $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}@sha256:%s ' *)
 
       - name: Create manifest list and push without annotations
         # This step creates a manifest list for the Docker images built for different platforms.
@@ -235,7 +237,7 @@ jobs:
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create  $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
+            $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}@sha256:%s ' *)
 
       - name: Inspect image
         # This step inspects the created manifest list to verify its contents.
@@ -243,4 +245,4 @@ jobs:
         # The inspection output will show the platforms and tags associated with the manifest list.
         id: inspect
         run: |
-          docker buildx imagetools inspect '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}'
+          docker buildx imagetools inspect '${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}:${{ steps.meta.outputs.version }}'

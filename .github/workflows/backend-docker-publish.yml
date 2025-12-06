@@ -23,8 +23,7 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
-  # IMAGE_NAME: ${{ github.repository }}-backend
-  IMAGE_NAME: ${{ github.repository | toLower }}-backend
+  IMAGE_NAME: ${{ github.repository }}-backend
 
 concurrency:
   # This concurrency group ensures that only one job in the group runs at a time.
@@ -62,6 +61,7 @@ jobs:
         id: prepare
         run: |
           platform=${{ matrix.platform }}
+          echo "IMAGE_NAME_LOWERCASE=${{ github.repository | toLower }}-backend" >> $GITHUB_ENV
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
 
       # Set up BuildKit Docker container builder to be able to build
@@ -107,7 +107,7 @@ jobs:
           # tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
-          outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true,oci-mediatypes=true
+          outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }},push-by-digest=true,name-canonical=true,push=true,oci-mediatypes=true
           cache-from: type=gha,scope=${{ github.repository }}-${{ github.ref_name }}-${{ matrix.platform }}
           cache-to: type=gha,scope=${{ github.repository }}-${{ github.ref_name }}-${{ matrix.platform }}
 

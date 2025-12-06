@@ -101,11 +101,33 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: backend
-          outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true,oci-mediatypes=true
           push: ${{ github.event_name != 'pull_request' }}
           platforms: ${{ matrix.platform }}
-          tags: ${{ steps.meta.outputs.tags }}
+          # tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
+          outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true,oci-mediatypes=true
           cache-from: type=gha,scope=${{ github.repository }}-${{ github.ref_name }}-${{ matrix.platform }}
           cache-to: type=gha,scope=${{ github.repository }}-${{ github.ref_name }}-${{ matrix.platform }}
+
+      - name: Export digest
+        # This step exports the digest of the built image to a file.
+        # It creates a directory in /tmp/digests and saves the digest of the image to a file.
+        # The digest is obtained from the output of the build step.
+        # The digest is used to uniquely identify the built image and can be used for further processing or verification.
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        # This step uploads the digest file to the GitHub Actions artifact storage.
+        # It uses the actions/upload-artifact action to upload the file created in the previous step.
+        # The artifact is named digests-${{ env.PLATFORM_PAIR }}, where PLATFORM_PAIR is the platform name with '/' replaced by '-'.
+        # The artifact is retained for 1 day, and if no files are found, it will throw an error.
+        uses: actions/upload-artifact@v5
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1

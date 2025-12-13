@@ -21,7 +21,7 @@ The app will be deployed to a Kubernetes cluster.
 
 ### Backend
 - Rust
-- Actix Web
+- Axum
 - sqlx
 - Kubernetes
 

@@ -16,7 +16,7 @@ FROM buildcache AS dev
 RUN cargo install cargo-watch
 # Grab dependencies into target
 RUN cargo chef cook --recipe-path recipe.json
-# This enables us ot keep /app/target inside the container when we mount /app from host
+# This enables us to keep /app/target inside the container when we mount /app from host
 VOLUME /app/target
 # So we hold the daemon mode of docker run
 CMD sleep infinity

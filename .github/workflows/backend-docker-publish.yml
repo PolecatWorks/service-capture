@@ -41,7 +41,7 @@ jobs:
           - linux/arm64
 
     # runs-on: ubuntu-latest
-    runs-on: ${{ matrix.platform == 'linux/amd64' && 'ubuntu-24.04-arm' || matrix.platform == 'linux/arm64' && 'ubuntu-24.04-arm' }}
+    runs-on: ${{ matrix.platform == 'linux/amd64' && 'ubuntu-24.04' || matrix.platform == 'linux/arm64' && 'ubuntu-24.04-arm' }}
     name: ${{ matrix.platform }} Backend Docker
     permissions:
       contents: read

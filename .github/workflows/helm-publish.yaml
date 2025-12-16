@@ -12,7 +12,7 @@ on:
     tags: ["v*.*.*"]
     paths:
       - "charts/**"
-      - ".github/workflows/helm-publish.yml"
+      - ".github/workflows/helm-publish.yaml"
   # pull_request:
   #   branches: [ "main" ]
 
@@ -43,9 +43,9 @@ jobs:
           echo "repository=${SHORTER_REPO@L}" >> $GITHUB_OUTPUT
 
       - name: Push Helm chart to OCI compatible registry (Github)
-        uses: bsord/helm-push@v4.1.0
+        uses: bsord/helm-push@v4
         with:
-          chart-folder: chart/service-capture-backend
+          chart-folder: charts/service-capture-backend
           useOCIRegistry: true
           # registry-url:  oci://ghcr.io/${{ github.repository }}-helm
           registry-url: oci://ghcr.io/${{ steps.lower-repo.outputs.repository }}/helm

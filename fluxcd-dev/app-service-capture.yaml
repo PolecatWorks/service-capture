@@ -7,7 +7,7 @@ spec:
   releaseName: app
   chart:
     spec:
-      chart: helm-charts/service-capture-backend
+      chart: service-capture-backend
       version: 0.0.0
       sourceRef:
         kind: HelmRepository

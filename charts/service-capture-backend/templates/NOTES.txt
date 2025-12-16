@@ -1,1 +1,3 @@
-PUT instructions for accessing your service here
+You installed service-capture-backend
+
+check the values.yaml for configuration options

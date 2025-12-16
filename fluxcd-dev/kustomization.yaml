@@ -3,3 +3,5 @@ kind: Kustomization
 namespace: service-capture
 resources:
   - telemetry-logs.yaml
+  - app-service-capture.yaml
+  - repository.yaml

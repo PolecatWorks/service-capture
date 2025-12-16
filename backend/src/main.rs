@@ -98,7 +98,7 @@ fn main() -> Result<ExitCode, MyError> {
     let args = Args::parse();
     match args.command {
         Commands::Version => {
-            println!("Version: {NAME}:{VERSION}");
+            println!("{NAME} Version: :{VERSION}");
             println!("HaMs Version: {}", hamsrs::hams_version());
         }
         Commands::Start { config, secrets } => {

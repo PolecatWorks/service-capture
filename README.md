@@ -1,5 +1,10 @@
 # Service Capture
 
+* [![backend Docker](https://github.com/PolecatWorks/service-capture/actions/workflows/backend-docker-publish.yml/badge.svg)](https://github.com/PolecatWorks/service-capture/actions/workflows/backend-docker-publish.yml)
+* [![frontend Docker](https://github.com/PolecatWorks/service-capture/actions/workflows/frontend-docker-publish.yml/badge.svg)](https://github.com/PolecatWorks/service-capture/actions/workflows/frontend-docker-publish.yml)
+* [![Helm](https://github.com/PolecatWorks/service-capture/actions/workflows/helm-publish.yaml/badge.svg)](https://github.com/PolecatWorks/service-capture/actions/workflows/helm-publish.yaml)
+
+
 This app allows the user to capture all the services and API calls needed to implement a customer journey.
 
 They app will capture the steps needed along the customer journey and the services and API calls needed to implement them. It also allows to capture the dependencies those services have upon other services and infrastructure.

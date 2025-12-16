@@ -16,7 +16,10 @@ spec:
   install:
     remediation:
       retries: 3
-  values: {}
+  values:
+    image:
+      repository: ghcr.io/polecatworks/service-capture-backend
+      tag: main
     # # imagePullSecrets:
     # #   - name: polecatworks-classic
     # be:

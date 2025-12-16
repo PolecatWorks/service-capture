@@ -7,11 +7,12 @@ name: Helm
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
     # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+    tags: ["v*.*.*"]
     paths:
-      - 'helm/**'
+      - "helm/**"
+      - ".github/workflows/helm-publish.yml"
   # pull_request:
   #   branches: [ "main" ]
 
@@ -21,10 +22,8 @@ env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
 
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -49,7 +48,7 @@ jobs:
           chart-folder: chart/service-capture-backend
           useOCIRegistry: true
           # registry-url:  oci://ghcr.io/${{ github.repository }}-helm
-          registry-url:  oci://ghcr.io/${{ steps.lower-repo.outputs.repository }}/helm
+          registry-url: oci://ghcr.io/${{ steps.lower-repo.outputs.repository }}/helm
           username: ${{ github.actor }}
           access-token: ${{ secrets.GITHUB_TOKEN }}
           force: true

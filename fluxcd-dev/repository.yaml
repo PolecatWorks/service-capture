@@ -1,0 +1,11 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: polecatworks
+spec:
+  interval: 60m
+  type: oci
+  url: oci://ghcr.io/polecatworks
+  # secretRef:
+  #   name: helm-ghcr-io

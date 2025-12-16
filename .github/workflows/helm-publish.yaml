@@ -11,7 +11,7 @@ on:
     # Publish semver tags as releases.
     tags: ["v*.*.*"]
     paths:
-      - "helm/**"
+      - "charts/**"
       - ".github/workflows/helm-publish.yml"
   # pull_request:
   #   branches: [ "main" ]

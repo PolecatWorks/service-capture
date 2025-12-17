@@ -8,6 +8,7 @@ spec:
   chart:
     spec:
       chart: service-capture-backend
+      reconcileStrategy: Revision
       version: 0.0.0
       sourceRef:
         kind: HelmRepository

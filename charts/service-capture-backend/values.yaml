@@ -1,6 +1,5 @@
 env: {}
 
-
 replicaCount: 1
 
 lifecycle:
@@ -22,7 +21,6 @@ readinessProbe:
     path: /hams/ready
   periodSeconds: 5
 
-
 health:
   startupProbe:
     failureThreshold: 30
@@ -31,7 +29,6 @@ health:
     periodSeconds: 30
   readinessProbe:
     periodSeconds: 5
-
 
 image: &image
   repository: polecatworks/service-capture-backend
@@ -71,7 +68,6 @@ service:
   type: ClusterIP
   port: 80
 
-
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -97,38 +93,33 @@ tolerations: []
 
 affinity: {}
 
+global: {} # TODO: Work to remove this
 
-global: {}  # TODO: Work to remove this
-
-configs: {}  # Note: Defaults provided in helm configs dir
-
-
-
+configs: {} # Note: Defaults provided in helm configs dir
 
 command0:
-- /entrypoint.sh
+  - /entrypoint.sh
 command1:
-- bash
-- -c
-- "sleep infinity"
+  - bash
+  - -c
+  - "sleep infinity"
 command2:
-- bash
-- -c
-- "mkdir -p /opt/app/objects/test_data/object_store; /usr/local/bin/service-capture-backend receive --config /opt/app/configs/serviceconfig.yaml"
-command:
-- service-capture-backend
-- start
-- --config
-- /opt/app/configs/serviceconfig.yaml
-- --secrets
-- /opt/app/secrets
+  - bash
+  - -c
+  - "mkdir -p /opt/app/objects/test_data/object_store; /usr/local/bin/service-capture-backend receive --config /opt/app/configs/serviceconfig.yaml"
+args:
+  - start
+  - --config
+  - /opt/app/configs/serviceconfig.yaml
+  - --secrets
+  - /opt/app/secrets
 
 secretName: null
 
 volumes: &volumes
   - name: configs
     configMap:
-      name: "{{ template \"service-capture-backend.fullname\" . }}"
+      name: '{{ template "service-capture-backend.fullname" . }}'
   - name: objects
     emptyDir:
       sizeLimit: 500Mi
@@ -137,13 +128,12 @@ volumes: &volumes
       sources:
         - secret:
             optional: true
-            name: "{{ .Values.secretName | default (include \"service-capture-backend.fullname\" .) }}"
+            name: '{{ .Values.secretName | default (include "service-capture-backend.fullname" .) }}'
             items:
               - key: access_key_id
                 path: s3/access_key_id
               - key: secret_key
                 path: s3/secret_key
-
 
 volumeMounts: &volume-mount
   - name: configs
@@ -153,8 +143,6 @@ volumeMounts: &volume-mount
     mountPath: /opt/app/objects
   - name: secrets
     mountPath: /opt/app/secrets
-
-
 
 # virtualservice:
 #   targetService: dynamic-lists
@@ -169,8 +157,6 @@ devsecops:
     jwtRules: []
   AuthorizationPolicy:
     rules: []
-
-
 # schema:
 #   command:
 #   - /usr/local/bin/service-capture-backend

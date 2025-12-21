@@ -5,3 +5,4 @@ resources:
   - telemetry-logs.yaml
   - app-service-capture.yaml
   - repository.yaml
+  - db-secret-push.yaml

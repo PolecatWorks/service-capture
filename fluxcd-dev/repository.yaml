@@ -4,7 +4,7 @@ kind: OCIRepository
 metadata:
   name: service-capture-backend
 spec:
-  interval: 60m
+  interval: 10m
   url: oci://ghcr.io/polecatworks/service-capture/helm/service-capture-backend
   ref:
     tag: 0.0.0

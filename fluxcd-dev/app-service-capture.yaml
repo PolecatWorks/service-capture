@@ -21,42 +21,14 @@ spec:
     image:
       repository: ghcr.io/polecatworks/service-capture-backend
       tag: main
-    # # imagePullSecrets:
-    # #   - name: polecatworks-classic
-    # be:
-    #   webservice:
-    #     prefix: /log4ham/v0
-    #   image:
-    #     repository: ghcr.io/polecatworks/log4ham-be
-    #     tag: main
-    #     pullPolicy: Always
-    #   configs:
-    #     persistence:
-    #       db:
-    #         connection:
-    #           url_file: db/url
-    #           username_file: db/username
-    #           password_file: db/password
-    #   volumes:
-    #     - name: configs
-    #       configMap:
-    #         name: '{{ template "service-capture-backend.fullname" . }}-be'
-    #     - name: objects
-    #       emptyDir:
-    #         sizeLimit: 500Mi
-    #     - name: secrets
-    #       projected:
-    #         sources:
-    #           - secret:
-    #               optional: false
-    #               name: log4ham-pg
-    #               items:
-    #                 - key: DB_USER
-    #                   path: db/username
-    #                 - key: DB_PASS
-    #                   path: db/password
-    #                 - key: CONNECTION_STRING
-    #                   path: db/url
+    secretName: db0-service-cap-user
+    configs:
+      persistence:
+        db:
+          connection:
+            url: postgres://cnpg-db0-cluster-rw.dbs.svc.cluster.local:5432/service_cap
+            username_file: db/username
+            password_file: db/password
     # devsecops:
     #   RequestAuthentication:
     #     jwtRules: []

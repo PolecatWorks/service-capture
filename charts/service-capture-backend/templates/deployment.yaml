@@ -59,13 +59,6 @@ spec:
               protocol: TCP
           lifecycle: {{- toYaml .Values.lifecycle | nindent 12 }}
 
-          # NOT using startupProbe as it provides us no benefit here. AND detrimetally provides a fake positive start.
-          # startupProbe:
-          #   httpGet:
-          #     port: http-health
-          #     path: "/hams/startup"
-          #   failureThreshold: {{ .Values.health.startupProbe.failureThreshold }}
-          #   periodSeconds: {{ .Values.health.startupProbe.periodSeconds }}
           livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:

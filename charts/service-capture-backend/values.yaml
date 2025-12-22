@@ -12,23 +12,14 @@ livenessProbe:
   httpGet:
     port: http-health
     path: /hams/alive
-    periodSeconds: 30
-    initialDelaySeconds: 30
+  periodSeconds: 30
+  initialDelaySeconds: 30
 
 readinessProbe:
   httpGet:
     port: http-health
     path: /hams/ready
   periodSeconds: 5
-
-health:
-  startupProbe:
-    failureThreshold: 30
-    periodSeconds: 10
-  livenessProbe:
-    periodSeconds: 30
-  readinessProbe:
-    periodSeconds: 5
 
 image: &image
   repository: polecatworks/service-capture-backend
@@ -93,20 +84,8 @@ tolerations: []
 
 affinity: {}
 
-global: {} # TODO: Work to remove this
-
 configs: {} # Note: Defaults provided in helm configs dir
 
-command0:
-  - /entrypoint.sh
-command1:
-  - bash
-  - -c
-  - "sleep infinity"
-command2:
-  - bash
-  - -c
-  - "mkdir -p /opt/app/objects/test_data/object_store; /usr/local/bin/service-capture-backend receive --config /opt/app/configs/serviceconfig.yaml"
 args:
   - start
   - --config
@@ -120,9 +99,6 @@ volumes: &volumes
   - name: configs
     configMap:
       name: '{{ template "service-capture-backend.fullname" . }}'
-  - name: objects
-    emptyDir:
-      sizeLimit: 500Mi
   - name: secrets
     projected:
       sources:
@@ -130,27 +106,16 @@ volumes: &volumes
             optional: true
             name: '{{ .Values.secretName | default (include "service-capture-backend.fullname" .) }}'
             items:
-              - key: access_key_id
-                path: s3/access_key_id
-              - key: secret_key
-                path: s3/secret_key
+              - key: username
+                path: db/username
+              - key: password
+                path: db/password
 
 volumeMounts: &volume-mount
   - name: configs
     mountPath: /opt/app/configs
-  - name: objects
-    # TODO: remove objects as we use real object-store
-    mountPath: /opt/app/objects
   - name: secrets
     mountPath: /opt/app/secrets
-
-# virtualservice:
-#   targetService: dynamic-lists
-#   targetPort: 8999
-#   match:
-#   - uri:
-#       prefix: "/dynamic-lists/api/v0/hello"
-#     port: 8999
 
 devsecops:
   RequestAuthentication:

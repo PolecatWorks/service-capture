@@ -26,6 +26,7 @@ backend-docker:
 
 backend-docker-run: backend-docker
 	docker run -it --rm --name $(IMAGE_NAME)-backend -p 8080:8080 --mount type=bind,src=$(PWD)/${BE_DIR}/test-data,dst=/test-data  \
+	-e CAPTURE_LOG=INFO \
 	-e APP_PERSISTENCE__DB__CONNECTION__URL=postgres://host.docker.internal:5432/service-capture \
 	$(IMAGE_NAME)-backend start --config /test-data/config-localhost.yaml --secrets /test-data/secrets
 

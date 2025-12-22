@@ -74,6 +74,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "service-capture-backend.env" -}}
+{{- tpl (toYaml .Values.env) . }}
 {{- end -}}
 
 

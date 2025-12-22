@@ -1,4 +1,4 @@
-{{- if .Values.devsecops.AuthorizationPolicy -}}
+{{- if .Values.devsecops.AuthorizationPolicy.rules -}}
 ---
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy

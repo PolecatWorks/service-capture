@@ -1,11 +1,10 @@
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
+kind: OCIRepository
 metadata:
-  name: polecatworks
+  name: service-capture-backend
 spec:
   interval: 60m
-  type: oci
-  url: oci://ghcr.io/polecatworks/service-capture/helm
-  # secretRef:
-  #   name: helm-ghcr-io
+  url: oci://ghcr.io/polecatworks/service-capture/helm/service-capture-backend
+  ref:
+    tag: 0.0.0

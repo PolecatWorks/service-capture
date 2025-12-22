@@ -38,7 +38,7 @@ spec:
       volumes: {{- include "service-capture-backend.volumes" . | nindent 8 }}
       containers:
         - name: service-capture-backend
-          env: {{- include "service-capture-backend.env" . | nindent 10 }}
+          env: {{- include "service-capture-backend.env" . | nindent 12 }}
           {{- with .Values.command }}
           command: {{- toYaml . | nindent 12 }}
           {{- end }}

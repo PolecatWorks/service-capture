@@ -1,0 +1,46 @@
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakClient
+metadata:
+  name: service-capture
+spec:
+  realmRef:
+    name: dev
+    kind: KeycloakRealm
+  advancedProtocolMappers: true
+  clientId: service-capture
+  name: Service Capture
+  description: Service Account to describe the service capture application
+  clientRoles:
+    - service-read
+    - service-write
+    - service-delete
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakRealmGroup
+metadata:
+  name: service-capture-readers
+spec:
+  realmRef:
+    name: service-capture
+    kind: KeycloakRealm
+  name: ServiceCaptureReaders
+  clientRoles:
+    - clientId: service-capture
+      roles:
+        - service-read
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakRealmGroup
+metadata:
+  name: service-capture-writers
+spec:
+  realmRef:
+    name: service-capture
+    kind: KeycloakRealm
+  name: ServiceCaptureWriters
+  clientRoles:
+    - clientId: service-capture
+      roles:
+        - service-write
+        - service-delete

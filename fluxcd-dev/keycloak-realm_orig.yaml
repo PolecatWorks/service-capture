@@ -1,0 +1,190 @@
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakRealm
+metadata:
+  name: dev
+spec:
+  realmName: dev
+  keycloakRef:
+    name: keycloak
+    kind: ClusterKeycloak
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakRealmGroup
+metadata:
+  name: dev-admins
+spec:
+  name: DevAdmins
+  realm: dev # the name of `kind: KeycloakRealm
+  realmRoles:
+    - python-read
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: keycloak-user-jon-snow
+type: Opaque
+data:
+  password: am9obnNub3dwdw== # base64-encoded value of "johnsnowpw"
+# ---
+# apiVersion: v1.edp.epam.com/v1
+# kind: KeycloakRealmRole
+# metadata:
+#   name: python-read
+# spec:
+#   description: Python read access
+#   name: python-read
+#   realmRef:
+#     name: dev
+#     kind: KeycloakRealm
+#   composite: false
+#   attributes:
+#     splash:
+#     - def
+#     - ghi
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakRealmGroup
+metadata:
+  name: devreaders
+spec:
+  realmRef:
+    name: dev
+    kind: KeycloakRealm
+  name: DevReaders
+  clientRoles:
+    - clientId: app-pie
+      roles:
+        - chunks-read
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakRealmGroup
+metadata:
+  name: devwriters
+spec:
+  realmRef:
+    name: dev
+    kind: KeycloakRealm
+  name: DevWriters
+  clientRoles:
+    - clientId: app-pie
+      roles:
+        - chunks-write
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakRealmUser
+metadata:
+  name: dev-user-john-snow
+spec:
+  realmRef:
+    name: dev
+    kind: KeycloakRealm
+  username: johnsnow
+  firstName: "John"
+  lastName: "Snow"
+  email: "john.snow13@example.com"
+  enabled: true
+  emailVerified: true
+  keepResource: true
+  roles:
+    - offline_access
+  groups:
+    - DevReaders
+  attributes:
+    foo: "bar"
+    baz: "jazz"
+  passwordSecret:
+    name: keycloak-user-jon-snow
+    key: password
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakRealmUser
+metadata:
+  name: dev-user-john-snow2
+spec:
+  realmRef:
+    name: dev
+    kind: KeycloakRealm
+  username: johnsnow2
+  firstName: "John"
+  lastName: "Snow2"
+  email: "john.snow132@example.com"
+  enabled: true
+  emailVerified: true
+  keepResource: true
+  roles:
+    - offline_access
+  groups:
+    - DevReaders
+    - DevWriters
+  passwordSecret:
+    name: keycloak-user-jon-snow
+    key: password
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakClientScope
+metadata:
+  name: client-audience
+spec:
+  name: client-audience
+  realmRef:
+    name: dev
+    kind: KeycloakRealm
+  description: Client mappers to audience
+  protocol: openid-connect
+  protocolMappers:
+    - name: app-pie-as-audience
+      protocol: openid-connect
+      protocolMapper: oidc-audience-mapper
+      config:
+        "included.client.audience": app-pie
+        "id.token.claim": "false"
+        "lightweight.claim": "false"
+        "access.token.claim": "true"
+        "introspection.token.claim": "true"
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakClient
+metadata:
+  name: app-pie
+spec:
+  realmRef:
+    name: dev
+    kind: KeycloakRealm
+  advancedProtocolMappers: true
+  clientId: app-pie
+  name: app pie Service Account
+  description: App pie Service Account
+  clientRoles:
+    - chunks-read
+    - chunks-write
+    - chunks-delete
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakClient
+metadata:
+  name: app-ui
+spec:
+  realmRef:
+    name: dev
+    kind: KeycloakRealm
+  advancedProtocolMappers: true
+  clientId: app-ui
+  name: app UI Oauth Client
+  description: "App UI OAuth Client"
+  public: true
+  standardFlowEnabled: true
+  directAccess: true
+  implicitFlowEnabled: true
+  optionalClientScopes:
+    - client-audience
+  # webUrl: https://argocd.example.com
+  # adminUrl: https://admin.example.com
+  # homeUrl: /home/
+  # defaultClientScopes:
+  #   - groups
+  redirectUris:
+    - "*"
+  webOrigins:
+    - "*"
+  #   - /url2/*

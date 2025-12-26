@@ -2,7 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: service-capture
 resources:
-  - telemetry-logs.yaml
   - app-service-capture.yaml
   - repository.yaml
-  - db-secret-push.yaml
+  - keycloak-realm.yaml
+  - telemetry-logs.yaml
+  - test-users.yaml

@@ -13,7 +13,7 @@ metadata:
   name: dev-user-john-snow
 spec:
   realmRef:
-    name: service-capture
+    name: dev
     kind: KeycloakRealm
   username: johnsnow
   firstName: John

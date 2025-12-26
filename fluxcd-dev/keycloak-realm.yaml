@@ -22,7 +22,7 @@ metadata:
   name: service-capture-readers
 spec:
   realmRef:
-    name: service-capture
+    name: dev
     kind: KeycloakRealm
   name: ServiceCaptureReaders
   clientRoles:
@@ -36,7 +36,7 @@ metadata:
   name: service-capture-writers
 spec:
   realmRef:
-    name: service-capture
+    name: dev
     kind: KeycloakRealm
   name: ServiceCaptureWriters
   clientRoles:

@@ -1,24 +1,4 @@
 ---
-apiVersion: v1.edp.epam.com/v1
-kind: KeycloakRealm
-metadata:
-  name: dev
-spec:
-  realmName: dev
-  keycloakRef:
-    name: keycloak
-    kind: ClusterKeycloak
----
-apiVersion: v1.edp.epam.com/v1
-kind: KeycloakRealmGroup
-metadata:
-  name: dev-admins
-spec:
-  name: DevAdmins
-  realm: dev # the name of `kind: KeycloakRealm
-  realmRoles:
-    - python-read
----
 apiVersion: v1
 kind: Secret
 metadata:

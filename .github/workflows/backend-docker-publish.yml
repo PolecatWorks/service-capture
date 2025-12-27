@@ -9,7 +9,7 @@ on:
   push:
     branches: ["main"]
     # Publish semver tags as releases.
-    tags: ["v*.*.*"]
+    tags: ["*.*.*"]
     paths:
       - "backend/**"
       - ".github/workflows/backend-docker-publish.yml"

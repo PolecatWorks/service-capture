@@ -17,4 +17,4 @@ spec:
   interval: 10m
   url: oci://ghcr.io/polecatworks/service-capture/helm/nginx-view
   ref:
-    tag: 0.0.0
+    tag: 0.1.0

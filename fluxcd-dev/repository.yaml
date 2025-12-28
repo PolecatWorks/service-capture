@@ -8,3 +8,13 @@ spec:
   url: oci://ghcr.io/polecatworks/service-capture/helm/service-capture-backend
   ref:
     tag: 0.0.0
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: nginx-view
+spec:
+  interval: 10m
+  url: oci://ghcr.io/polecatworks/service-capture/helm/nginx-view
+  ref:
+    tag: 0.0.0

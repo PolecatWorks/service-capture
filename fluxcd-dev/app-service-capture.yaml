@@ -55,3 +55,21 @@ spec:
     #     #   - key: request.auth.claims[resource_access][app-pie][roles]
     #     #     values:
     #     #     - chunks-write
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: sc-fe
+spec:
+  releaseName: app
+  chartRef:
+    kind: OCIRepository
+    name: nginx-view
+  interval: 50m
+  install:
+    remediation:
+      retries: 3
+  values:
+    image:
+      repository: ghcr.io/polecatworks/service-capture-frontend
+      tag: main

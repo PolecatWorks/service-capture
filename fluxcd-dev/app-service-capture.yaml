@@ -2,9 +2,9 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: app
+  name: cap-api
 spec:
-  releaseName: app
+  releaseName: cap-api
   chartRef:
     kind: OCIRepository
     name: service-capture-backend
@@ -59,9 +59,9 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: sc-fe
+  name: cap-ui
 spec:
-  releaseName: app
+  releaseName: cap-ui
   chartRef:
     kind: OCIRepository
     name: nginx-view

@@ -1,0 +1,28 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: nginx-view
+spec:
+  interval: 10m
+  url: oci://ghcr.io/polecatworks/service-capture/helm/nginx-view
+  ref:
+    tag: 0.1.0
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cap-ui
+spec:
+  releaseName: cap-ui
+  chartRef:
+    kind: OCIRepository
+    name: nginx-view
+  interval: 50m
+  install:
+    remediation:
+      retries: 3
+  values:
+    image:
+      repository: ghcr.io/polecatworks/service-capture-frontend
+      tag: main

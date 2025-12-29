@@ -25,7 +25,7 @@ spec:
   roles:
     - offline_access
   groups:
-    - service-capture-readers
+    - ServiceCaptureReaders
   attributes:
     foo: bar
     baz: jazz

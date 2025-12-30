@@ -8,6 +8,7 @@ use hamsrs::hamserror::HamsError;
 // use hamsrs::hamserror::HamsError;
 use axum::extract::rejection::JsonRejection;
 use thiserror::Error;
+use tracing_subscriber::filter::FromEnvError;
 
 /// Error type for handling errors on Sample
 #[derive(Error, Debug)]
@@ -22,7 +23,6 @@ pub enum MyError {
 
     #[error("Prometheus error `{0}`")]
     PrometheusError(#[from] prometheus::Error),
-
 
     #[error("Serdes error `{0}`")]
     Serde(#[from] serde_json::Error),
@@ -48,4 +48,7 @@ pub enum MyError {
 
     #[error("Figment error `{0}`")]
     FigmentError(#[from] figment::error::Error),
+
+    #[error("EnvFilter error `{0}`")]
+    EnvFilterError(#[from] FromEnvError),
 }

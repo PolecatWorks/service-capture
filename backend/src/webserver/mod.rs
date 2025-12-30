@@ -220,6 +220,7 @@ impl IntoResponse for MyError {
             MyError::FigmentError(error) => todo!(),
             MyError::JsonRejection(rejection) => (rejection.status(), rejection.body_text()),
             MyError::PrometheusError(error) => todo!(),
+            MyError::EnvFilterError(error) => todo!(),
         };
 
         // Use a public constructor or helper function for ErrorResponse.

@@ -34,34 +34,34 @@ spec:
             url: postgres://cnpg-db0-cluster-rw.dbs.svc.cluster.local:5432/service_cap
             username_file: db/username
             password_file: db/password
-    # devsecops:
-    #   RequestAuthentication:
-    #     jwtRules: []
-    #       # - issuer: http://dev.k8s/auth/realms/dev
-    #       #   jwksUri: http://keycloak.security/auth/realms/dev/protocol/openid-connect/certs
-    #       #   forwardOriginalToken: true
-    #       #   audiences:
-    #       #     - app-cake
-    #   AuthorizationPolicy:
-    #     rules: []
-    #     # - to:
-    #     #   - operation:
-    #     #       methods:
-    #     #       - GET
-    #     #       paths:
-    #     #       - /cake/v0/chunks
-    #     #   when:
-    #     #   - key: request.auth.claims[resource_access][app-pie][roles]
-    #     #     values:
-    #     #     - chunks-read
-    #     # - to:
-    #     #   - operation:
-    #     #       methods:
-    #     #       - POST
-    #     #       - PUT
-    #     #       paths:
-    #     #       - /cake/v0/chunks
-    #     #   when:
-    #     #   - key: request.auth.claims[resource_access][app-pie][roles]
-    #     #     values:
-    #     #     - chunks-write
+    devsecops:
+      RequestAuthentication:
+        jwtRules:
+          - issuer: http://dev.k8s/auth/realms/dev
+            jwksUri: http://keycloak-keycloakx-http.auth/auth/realms/dev/protocol/openid-connect/certs
+            forwardOriginalToken: true
+            audiences:
+              - service-capture
+      AuthorizationPolicy:
+        rules: []
+        # - to:
+        #   - operation:
+        #       methods:
+        #       - GET
+        #       paths:
+        #       - /cake/v0/chunks
+        #   when:
+        #   - key: request.auth.claims[resource_access][app-pie][roles]
+        #     values:
+        #     - chunks-read
+        # - to:
+        #   - operation:
+        #       methods:
+        #       - POST
+        #       - PUT
+        #       paths:
+        #       - /cake/v0/chunks
+        #   when:
+        #   - key: request.auth.claims[resource_access][app-pie][roles]
+        #     values:
+        #     - chunks-write

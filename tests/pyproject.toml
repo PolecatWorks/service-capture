@@ -1,0 +1,48 @@
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+
+[tool.poetry]
+name = "apptest"
+version = "0.3.0"
+description = "App Test for Service Capture"
+authors = ["Ben Greene <BenJGreene@gmail.com>"]
+readme = "README.md"
+license = "GPL3"
+repository = "https://github.com/PolecatWorks/service-capture"
+include = ["LICENSE"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+click = "^8"
+pydantic-yaml = {extras = ["pyyaml"], version = "^1.4"}
+aiohttp = "^3"
+pydantic-settings = {extras = ["yaml"], version = "^2.6"}
+pydantic-file-secrets = "^0.4"
+
+
+[tool.poetry.group.dev.dependencies]
+aiohttp-devtools = "^1"
+pytest-asyncio = "^1.1.0"
+pytest = "^9"
+flake8 = "^7.1.1"
+flake8-black = "^0.4"
+pylint = "^4.0"
+pytest-cov = "^7.0"
+pytest-aiohttp = "^1"
+pytest-watch = "^4.2.0"
+
+
+
+# [tool.poetry.scripts]
+# chatbot = "chatbot.cli:cli"
+
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q"
+asyncio_mode = "auto"
+testpaths = ["tests"]

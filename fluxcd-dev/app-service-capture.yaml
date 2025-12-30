@@ -37,7 +37,7 @@ spec:
     devsecops:
       RequestAuthentication:
         jwtRules:
-          - issuer: http://dev.k8s/auth/realms/dev
+          - issuer: http://keycloak.k8s/auth/realms/dev
             jwksUri: http://keycloak-keycloakx-http.auth/auth/realms/dev/protocol/openid-connect/certs
             forwardOriginalToken: true
             audiences:

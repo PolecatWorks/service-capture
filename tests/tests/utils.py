@@ -1,7 +1,6 @@
 import aiohttp
 
 from pydantic import BaseModel
-from typing import Optional
 
 
 async def get_jwt_access():
@@ -9,11 +8,12 @@ async def get_jwt_access():
     data = {
         "grant_type": "password",
         "username": "johnsnow",
-        "password": "johnsnow",
+        "password": "johnsnowpw",
         "client_id": "app-ui"
     }
     async with aiohttp.ClientSession() as session:
         async with session.post(url, data=data) as response:
+            assert response.status == 200
             return await response.json()
 
 
@@ -26,11 +26,16 @@ class Users(BaseModel):
     pagination: Pagination
 
 
-
-
-async def get_users(access_token: str|None = None) -> Users:
+async def get_users(access_token: str | None = None) -> Users | str:
     url = "http://dev.k8s/capture/users"
-    headers = {"Authorization": f"Bearer {access_token}"}
+    headers = {}
+
+    if access_token:
+        headers["Authorization"] = f"Bearer {access_token}"
+    print(f"Headers: {headers}")
+
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers=headers) as response:
-            return Users(**await response.json())
+            if response.status == 200:
+                return Users(**await response.json())
+            return f"Error {response.status}: {await response.text()}"

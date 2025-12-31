@@ -43,25 +43,31 @@ spec:
             audiences:
               - service-capture
       AuthorizationPolicy:
-        rules: []
-        # - to:
-        #   - operation:
-        #       methods:
-        #       - GET
-        #       paths:
-        #       - /cake/v0/chunks
-        #   when:
-        #   - key: request.auth.claims[resource_access][app-pie][roles]
-        #     values:
-        #     - chunks-read
-        # - to:
-        #   - operation:
-        #       methods:
-        #       - POST
-        #       - PUT
-        #       paths:
-        #       - /cake/v0/chunks
-        #   when:
-        #   - key: request.auth.claims[resource_access][app-pie][roles]
-        #     values:
-        #     - chunks-write
+        rules:
+          - to:
+              - operation:
+                  methods:
+                    - GET
+                  paths:
+                    - /capture/users
+                    - /capture/services
+                    - /capture/dependencies
+                    - /capture/hello
+            when:
+              - key: request.auth.claims[resource_access][service-capture][roles]
+                values:
+                  - service-read
+          - to:
+              - operation:
+                  methods:
+                    - POST
+                    - PUT
+                    - DELETE
+                  paths:
+                    - /capture/users
+                    - /capture/services
+                    - /capture/dependencies
+            when:
+              - key: request.auth.claims[resource_access][service-capture][roles]
+                values:
+                  - service-write

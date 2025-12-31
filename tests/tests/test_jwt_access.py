@@ -13,6 +13,7 @@ async def test_jwt_access():
 
 async def test_users():
     jwt = await get_jwt_access()
+    print(jwt['access_token'])
     users = await get_users(jwt['access_token'])
     assert users
 
@@ -25,4 +26,4 @@ async def test_users():
 
 async def test_users_without_auth():
     users = await get_users()
-    assert users
+    assert users == "Error 403: RBAC: access denied"

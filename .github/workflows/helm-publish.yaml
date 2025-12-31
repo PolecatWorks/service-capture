@@ -1,37 +1,55 @@
-name: Helm
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
+name: Helm CI
 
 on:
   push:
     branches: ["main"]
-    # Publish semver tags as releases.
-    tags: ["*.*.*"]
-    paths:
-      - "charts/**"
-      - ".github/workflows/helm-publish.yaml"
-  # pull_request:
-  #   branches: [ "main" ]
+  pull_request:
+    branches: ["main"]
 
 env:
-  # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
-  # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
+  check-paths:
+    runs-on: ubuntu-latest
+    outputs:
+      charts: ${{ steps.filter.outputs.charts }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            charts:
+              - 'charts/**'
+              - '.github/workflows/helm-publish.yaml'
+
+  lint:
+    needs: check-paths
+    if: needs.check-paths.outputs.charts == 'true' && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4.2.0
+
+      - name: Lint service-capture-backend
+        run: helm lint charts/service-capture-backend
+
+      - name: Lint nginx-view
+        run: helm lint charts/nginx-view
+
+  publish:
+    needs: check-paths
+    if: needs.check-paths.outputs.charts == 'true' && github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
       id-token: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -47,7 +65,6 @@ jobs:
         with:
           chart-folder: charts/service-capture-backend
           useOCIRegistry: true
-          # registry-url:  oci://ghcr.io/${{ github.repository }}-helm
           registry-url: oci://ghcr.io/${{ steps.lower-repo.outputs.repository }}/helm
           username: ${{ github.actor }}
           access-token: ${{ secrets.GITHUB_TOKEN }}
@@ -58,17 +75,31 @@ jobs:
         with:
           chart-folder: charts/nginx-view
           useOCIRegistry: true
-          # registry-url:  oci://ghcr.io/${{ github.repository }}-helm
           registry-url: oci://ghcr.io/${{ steps.lower-repo.outputs.repository }}/helm
           username: ${{ github.actor }}
           access-token: ${{ secrets.GITHUB_TOKEN }}
           force: true
 
-      # - name: Helm Publish Action
-      #   uses: huggingface/helm-publish-action@latest
-      #   with:
-      #     workingDirectory: charts
-      #     repository: oci://ghcr.io/${{ github.repository }}
-      #     username: ${{ github.actor }}
-      #     password: ${{ secrets.GITHUB_TOKEN }}
-      #     beforeHook: cd subcharts/my-sub-chart && helm dependencies update
+  ci-success:
+    name: Helm CI Success
+    needs: [check-paths, lint, publish]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Status
+        run: |
+          # If charts changed, check if the relevant job succeeded
+          if [[ "${{ needs.check-paths.outputs.charts }}" == 'true' ]]; then
+            if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
+               if [[ "${{ needs.lint.result }}" != 'success' ]]; then
+                 echo "Lint failed!"
+                 exit 1
+               fi
+            else
+               if [[ "${{ needs.publish.result }}" != 'success' ]]; then
+                 echo "Publish failed!"
+                 exit 1
+               fi
+            fi
+          fi
+          echo "Success!"

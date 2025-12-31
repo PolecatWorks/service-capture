@@ -114,8 +114,10 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
           outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }},push-by-digest=true,name-canonical=true,push=true,oci-mediatypes=true
-          cache-from: type=gha,scope=${{ github.repository }}-${{ github.ref_name }}-${{ matrix.platform }}
-          cache-to: type=gha,scope=${{ github.repository }}-${{ github.ref_name }}-${{ matrix.platform }}
+          cache-from: |
+            type=gha,scope=${{ github.repository }}-frontend-${{ github.ref_name }}-${{ matrix.platform }}
+            type=gha,scope=${{ github.repository }}-frontend-main-${{ matrix.platform }}
+          cache-to: type=gha,mode=max,scope=${{ github.repository }}-frontend-${{ github.ref_name }}-${{ matrix.platform }}
 
       - name: Export digest
         # This step exports the digest of the built image to a file.

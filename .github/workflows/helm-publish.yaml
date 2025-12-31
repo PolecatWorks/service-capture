@@ -60,6 +60,21 @@ jobs:
           SHORTER_REPO=${GITHUB_REPOSITORY%:*}
           echo "repository=${SHORTER_REPO@L}" >> $GITHUB_OUTPUT
 
+      - name: Get Short SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Update Chart Versions
+        run: |
+          suffix="-dev-${{ steps.vars.outputs.sha_short }}"
+          sed -i "s/^version: .*/&${suffix}/" charts/service-capture-backend/Chart.yaml
+          sed -i "s/^version: .*/&${suffix}/" charts/nginx-view/Chart.yaml
+
+          echo "Updated Service Capture Backend Version:"
+          grep "^version:" charts/service-capture-backend/Chart.yaml
+          echo "Updated Nginx View Version:"
+          grep "^version:" charts/nginx-view/Chart.yaml
+
       - name: Push Helm chart to OCI for service-capture-backend
         uses: bsord/helm-push@v4
         with:

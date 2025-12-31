@@ -1,7 +1,7 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 
 export const authCodeFlowConfig: AuthConfig = {
-  issuer: 'http://keycloak.dev/realms/dev',
+  issuer: 'http://keycloak.k8s/auth/realms/dev',
   redirectUri: window.location.origin + '/index.html',
   clientId: 'app-ui',
   responseType: 'code',

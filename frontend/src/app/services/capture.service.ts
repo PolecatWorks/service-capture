@@ -11,26 +11,16 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class CaptureService {
-
-
   constructor(
     public http: HttpClient,
     private authService: AuthService
-  ) {
-
-  }
+  ) {}
 
   public prefix = '/capture';
 
-
-
   private servicesSource = new BehaviorSubject<number>(Date.now());
-
 
   // Define logs APIs
 
-
-
   // Define users APIs
-
 }

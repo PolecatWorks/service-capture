@@ -4,10 +4,10 @@ import { User } from '../structs/user';
 import { CaptureService } from './capture.service';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class UsersService extends RestGeneric<User> {
-    constructor(captureService: CaptureService) {
-        super(captureService.http, captureService.prefix + '/users', 'Users');
-    }
+  constructor(captureService: CaptureService) {
+    super(captureService.http, captureService.prefix + '/users', 'Users');
+  }
 }

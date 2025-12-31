@@ -2,7 +2,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, forkJoin, map, Observable, Subject, switchMap, tap, throwError } from 'rxjs';
 import { ListPages, PageOptions } from './pagination';
 
-
 export function asHttpParams<T>(options: PageOptions<T>): HttpParams {
   const simpleObj: Record<string, string> = {};
 
@@ -24,7 +23,7 @@ export class RestGeneric<T extends { id?: string | number }> {
     protected http: HttpClient,
     public url: string,
     public name: string
-  ) { }
+  ) {}
 
   private source = new Subject<number>();
 

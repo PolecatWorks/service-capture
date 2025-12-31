@@ -10,35 +10,23 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { of, switchMap } from 'rxjs';
 
-
 @Component({
   selector: 'app-service',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    FormsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule
-  ],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, FormsModule, MatInputModule, MatButtonModule, MatIconModule],
   templateUrl: './service.component.html',
   styleUrl: './service.component.scss',
 })
 export class ServiceComponent {
   service: Service = {} as Service;
 
-
   isEditing = false;
-
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private servicesService: ServicesService,
     private router: Router
   ) {
-
     this.activatedRoute.params
       .pipe(
         switchMap(param => {
@@ -54,7 +42,6 @@ export class ServiceComponent {
         this.service = params;
       });
   }
-
 
   private newRecord() {
     return this.service.id === undefined;
@@ -94,12 +81,4 @@ export class ServiceComponent {
     this.service.x = null;
     this.service.y = null;
   }
-
-
-
-
-
-
-
-
 }

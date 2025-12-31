@@ -1,4 +1,6 @@
 env: []
+  # - name: CAPTURE_LOG
+  #   value: INFO
 
 replicaCount: 1
 

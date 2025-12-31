@@ -14,6 +14,7 @@ use service_capture::{
     // persistence::{start_db_backup, start_db_check_tables, start_db_migrate},
     // webserver::service_start,
 };
+use tracing::level_filters::LevelFilter;
 use tracing::{Level, debug, error, info};
 
 use service_capture::{NAME, VERSION, service_start};
@@ -83,16 +84,15 @@ enum Commands {
 }
 
 fn main() -> Result<ExitCode, MyError> {
+    // let env = EnvFilter::from_env("CAPTURE_LOG");
+    let env = EnvFilter::builder()
+        .with_default_directive(LevelFilter::WARN.into())
+        .with_env_var("CAPTURE_LOG")
+        .from_env()?;
+
     tracing_subscriber::fmt()
         .with_max_level(Level::INFO)
-        .with_env_filter(EnvFilter::from_env("CAPTURE_LOG"))
-        // This allows you to use, e.g., `RUST_LOG=info` or `RUST_LOG=debug`
-        // when running the app to set log levels.
-        // .with_env_filter(
-        //     EnvFilter::try_from_default_env()
-        //         .or_else(|_| EnvFilter::try_new("axum_tracing_example=error,tower_http=warn"))
-        //         .unwrap(),
-        // )
+        .with_env_filter(env)
         .init();
 
     let args = Args::parse();

@@ -5,7 +5,7 @@ describe('Pagination Helper', () => {
     const options: PageOptions<any> = {
       page: 1,
       size: 20,
-      sort: { property: 'name', order: 'asc' }
+      sort: { property: 'name', order: 'asc' },
     };
     const params = asHttpParams(options);
     expect(params.get('page')).toBe('1');

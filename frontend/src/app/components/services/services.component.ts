@@ -10,7 +10,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { PaginationDataSource } from '../../services/paginated-data-source.service';
 import { PageOptions } from '../../services/pagination';
 
-
 @Component({
   selector: 'app-services',
   standalone: true,
@@ -40,8 +39,4 @@ export class ServicesComponent implements AfterViewInit {
   }
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
-
-
-
 }

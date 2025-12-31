@@ -40,7 +40,7 @@ export const routes: Routes = [
             path: 'edit/:id',
             component: ServiceComponent,
           },
-        ]
+        ],
       },
       {
         path: 'dependencies',
@@ -54,13 +54,12 @@ export const routes: Routes = [
             path: 'edit/:id',
             loadComponent: () => import('./components/dependency/dependency.component').then(m => m.DependencyComponent),
           },
-        ]
+        ],
       },
       {
         path: 'view',
         loadComponent: () => import('./components/service-view/service-view.component').then(m => m.ServiceViewComponent),
       },
-
     ],
   },
   { path: '**', pathMatch: 'full', redirectTo: 'home' },

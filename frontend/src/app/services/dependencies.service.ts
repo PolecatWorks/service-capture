@@ -4,10 +4,10 @@ import { Dependency } from '../structs/dependency';
 import { CaptureService } from './capture.service';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class DependenciesService extends RestGeneric<Dependency> {
-    constructor(captureService: CaptureService) {
-        super(captureService.http, captureService.prefix + '/dependencies', 'Dependencies');
-    }
+  constructor(captureService: CaptureService) {
+    super(captureService.http, captureService.prefix + '/dependencies', 'Dependencies');
+  }
 }

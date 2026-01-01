@@ -26,6 +26,7 @@ spec:
     image:
       repository: ghcr.io/polecatworks/service-capture-backend
       tag: main
+      pullPolicy: Always # Dev ONLY
     secretName: db0-service-cap-user
     configs:
       persistence:

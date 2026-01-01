@@ -1,12 +1,13 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection, APP_INITIALIZER } from '@angular/core';
 import { provideRouter, withDebugTracing } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
 
-import { provideOAuthClient } from 'angular-oauth2-oidc';
+import { provideOAuthClient, OAuthService } from 'angular-oauth2-oidc';
 import { authInterceptor } from './interceptors/auth.interceptor';
+import { initializeAuthConfig } from './auth.config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,5 +17,11 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(withInterceptorsFromDi(), withInterceptors([authInterceptor])),
     provideOAuthClient(),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeAuthConfig,
+      deps: [HttpClient, OAuthService],
+      multi: true,
+    },
   ],
 };

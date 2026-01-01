@@ -50,10 +50,10 @@ spec:
                   methods:
                     - GET
                   paths:
-                    - /capture/users
-                    - /capture/services
-                    - /capture/dependencies
-                    - /capture/hello
+                    - /capture/users*
+                    - /capture/services*
+                    - /capture/dependencies*
+                    - /capture/hello*
             when:
               - key: request.auth.claims[resource_access][service-capture][roles]
                 values:
@@ -62,12 +62,23 @@ spec:
               - operation:
                   methods:
                     - POST
-                    - PUT
-                    - DELETE
                   paths:
                     - /capture/users
                     - /capture/services
                     - /capture/dependencies
+            when:
+              - key: request.auth.claims[resource_access][service-capture][roles]
+                values:
+                  - service-write
+          - to:
+              - operation:
+                  methods:
+                    - PUT
+                    - DELETE
+                  paths:
+                    - /capture/users/*
+                    - /capture/services/*
+                    - /capture/dependencies/*
             when:
               - key: request.auth.claims[resource_access][service-capture][roles]
                 values:

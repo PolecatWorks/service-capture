@@ -1,8 +1,6 @@
 env: {}
 
-
 replicaCount: 1
-
 
 lifecycle: {}
 livenessProbe:
@@ -16,8 +14,6 @@ readinessProbe:
     port: http-web
     path: "/ready"
   periodSeconds: 5
-
-
 
 image:
   repository: polecatworks/nginx-view
@@ -48,7 +44,6 @@ service:
   type: ClusterIP
   port: 80
 
-
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -74,18 +69,15 @@ tolerations: []
 
 affinity: {}
 
-
-global: {}  # TODO: Work to remove this
+global: {} # TODO: Work to remove this
 
 config:
-  configs: {}  # Note: Defaults provided in config/configs directory
-  contents: {}  # Note: Defaults provided in config/contents directory
-  inits: {}  # Note: Defaults provided in config/inits directory
+  configs: {} # Note: Defaults provided in config/configs directory
+  contents: {} # Note: Defaults provided in config/contents directory
+  inits: {} # Note: Defaults provided in config/inits directory
 
 nginxConfig:
   rootPath: /
-
-
 
 command: []
 
@@ -94,20 +86,20 @@ secretName: null
 volumes:
   - name: configs
     configMap:
-      name: "{{ template \"nginx-view.fullname\" . }}-configs"
+      name: '{{ template "nginx-view.fullname" . }}-configs'
   - name: contents
     configMap:
-      name: "{{ template \"nginx-view.fullname\" . }}-contents"
+      name: '{{ template "nginx-view.fullname" . }}-contents'
   - name: init
     configMap:
-      name: "{{ template \"nginx-view.fullname\" . }}-inits"
-
+      name: '{{ template "nginx-view.fullname" . }}-inits'
 
 volumeMounts:
   - name: configs
     # Targetting this dir allows the templates to be populated with envsubst
     mountPath: /etc/nginx/templates
-
+  - name: contents
+    mountPath: /usr/share/nginx/html/assets/config
 
 devsecops:
   RequestAuthentication:

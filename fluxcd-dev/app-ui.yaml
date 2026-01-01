@@ -27,3 +27,19 @@ spec:
       repository: ghcr.io/polecatworks/service-capture-frontend
       tag: main
       pullPolicy: Always # Dev ONLY
+    config:
+      contents:
+        auth-config.json: |
+          {
+            "issuer": "http://keycloak.k8s/auth/realms/dev",
+            "redirectUri": "/index.html",
+            "clientId": "app-ui",
+            "responseType": "code",
+            "scope": "openid profile email offline_access",
+            "useSilentRefresh": true,
+            "showDebugInformation": true,
+            "timeoutFactor": 0.01,
+            "requireHttps": false,
+            "skipIssuerCheck": true,
+            "strictDiscoveryDocumentValidation": false
+          }

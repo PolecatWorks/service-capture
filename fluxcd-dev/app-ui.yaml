@@ -26,3 +26,4 @@ spec:
     image:
       repository: ghcr.io/polecatworks/service-capture-frontend
       tag: main
+      pullPolicy: Always # Dev ONLY

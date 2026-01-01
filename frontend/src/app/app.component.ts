@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { authCodeFlowConfig } from './auth.config';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -14,7 +13,6 @@ export class AppComponent {
   title = 'shell';
 
   constructor(private oauthService: OAuthService) {
-    this.oauthService.configure(authCodeFlowConfig);
     this.oauthService.loadDiscoveryDocumentAndLogin();
 
     //this.oauthService.setupAutomaticSilentRefresh();

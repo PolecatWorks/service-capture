@@ -13,11 +13,18 @@ server {
         return 200;
     }
 
-
-    location / {
-        root   /usr/share/nginx/html;
+    location ${SERVE_ROOT}/ {
+        alias   /usr/share/nginx/html/;
         index  index.html index.htm;
+
+        try_files $uri $uri/ ${SERVE_ROOT}/index.html;
     }
+
+
+    # Optional: Redirect root traffic to /apple/
+    # location / {
+    #     return 301 ${SERVE_ROOT}/;
+    # }
 
     error_page  404              /index.html;
 

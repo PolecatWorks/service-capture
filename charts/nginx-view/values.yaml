@@ -1,4 +1,5 @@
-env: {}
+env: []
+serve_root: ""
 
 replicaCount: 1
 
@@ -97,7 +98,7 @@ volumeMounts:
     # Targetting this dir allows the templates to be populated with envsubst
     mountPath: /etc/nginx/templates
   - name: contents
-    mountPath: /usr/share/nginx/html/assets/config
+    mountPath: /usr/share/nginx/html/assets/contents
 
 devsecops:
   RequestAuthentication:

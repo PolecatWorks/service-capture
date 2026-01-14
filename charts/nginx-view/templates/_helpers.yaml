@@ -94,13 +94,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 
-
 {{- define "nginx-view.configs" -}}
 {{- $baseconfig := fromYaml (.Files.Get "configs") }}
 {{- $newconfig := .Values.configs }}
 {{- $postmerge := mergeOverwrite $baseconfig $newconfig }}
 {{- toYaml $postmerge }}
 {{- end -}}
+
 
 
 {{- define "nginx-view.volumes" -}}
@@ -112,6 +112,18 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "nginx-view.env" -}}
+{{- $myEnv := .Values.env -}}
+{{- $myEnv = append $myEnv (dict "name" "SERVE_ROOT" "value" .Values.serve_root) -}}
+{{- tpl (toYaml $myEnv) . }}
+{{- end -}}
+
+
+{{- define "nginx-view.shas" -}}
+checksum/config: {{ tpl (include "nginx-view.configs" .) . | sha256sum }}
+checksum/volumes: {{ tpl (include "nginx-view.volumes" .) . | sha256sum }}
+checksum/configs: {{ tpl (include "nginx-view.getConfigs" .) . | sha256sum }}
+checksum/inits: {{ tpl (include "nginx-view.getInits" .) . | sha256sum }}
+checksum/contents: {{ tpl (include "nginx-view.getContents" .) . | sha256sum }}
 {{- end -}}
 
 

@@ -3,4 +3,4 @@ You installed service-capture-backend
 check the values.yaml for configuration options
 
 shas:
-{{- include "service-capture.shas" .  | nindent 2 }}
+{{- include "service-capture-backend.shas" .  | nindent 2 }}

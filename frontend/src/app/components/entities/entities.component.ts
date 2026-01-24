@@ -30,6 +30,23 @@ export class EntitiesComponent implements AfterViewInit {
     );
   }
 
+  getIcon(type: string): string {
+    switch (type.toLowerCase()) {
+      case 'host':
+        return 'dns';
+      case 'availability_zone':
+        return 'cloud';
+      case 'service':
+        return 'lan';
+      case 'database':
+        return 'storage';
+      case 'region':
+        return 'public';
+      default:
+        return 'help_outline';
+    }
+  }
+
   ngAfterViewInit(): void {
     this.data.sortBy({ property: 'name', order: 'asc' });
     this.data.fetch(0);

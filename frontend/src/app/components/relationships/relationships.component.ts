@@ -30,6 +30,19 @@ export class RelationshipsComponent implements AfterViewInit {
     );
   }
 
+  getRelIcon(type: string): string {
+    switch (type.toUpperCase()) {
+      case 'CONTAINS':
+        return 'folder';
+      case 'CALLS':
+        return 'call_made';
+      case 'HOSTED_ON':
+        return 'dns';
+      default:
+        return 'compare_arrows';
+    }
+  }
+
   ngAfterViewInit(): void {
     this.data.sortBy({ property: 'id', order: 'asc' });
     this.data.fetch(0);

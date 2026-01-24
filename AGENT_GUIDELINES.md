@@ -25,6 +25,7 @@ Upon approval of the plan, enter development mode:
     - Use Makefile targets for testing (e.g., `make backend-test`).
 3.  **Commit**: After passing tests for a given task, make a git commit.
     - Format: `git commit -m "task: brief description of changes"`
+    - **CRITICAL**: NEVER commit directly to the `main` branch. Always use a feature branch.
 
 ### 4. Finalization
 After completing a batch of features and before handing off to the user:

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Service } from '../structs/service';
+import { Entity } from '../structs/entity';
 
-export interface ServiceNode extends Service {
+export interface EntityNode extends Entity {
   x: number;
   y: number;
   originalX: number;
@@ -15,44 +15,38 @@ export class LayoutService {
   private readonly GRID_SIZE = 20;
   private readonly COLS = 5; // Adjust based on expected screen width / grid size
 
-  constructor() {}
+  constructor() { }
 
-  calculatePositions(services: Service[]): ServiceNode[] {
+  calculatePositions(entities: Entity[]): EntityNode[] {
     const occupied = new Set<string>();
-    const nodes: ServiceNode[] = [];
-    const unpositioned: Service[] = [];
+    const nodes: EntityNode[] = [];
+    const unpositioned: Entity[] = [];
 
-    // 1. Place services with existing coordinates
-    services.forEach(service => {
-      if (service.x != null && service.y != null) {
-        const x = service.x;
-        const y = service.y;
+    // 1. Place entities with existing coordinates
+    entities.forEach(entity => {
+      if (entity.x != null && entity.y != null) {
+        const x = entity.x;
+        const y = entity.y;
         nodes.push({
-          ...service,
+          ...entity,
           x,
           y,
           originalX: x,
           originalY: y,
         });
-        // Mark occupied slots (approximate grid snapping for collision check)
-        // We might want to snap them or just mark the area.
-        // For simplicity, let's assume if they are close to a grid point, that point is taken.
-        // Or better, just store the exact positions and check distance later?
-        // The requirement says "consider where services with coordinates are currently placed".
-        // Let's use a simple grid reservation system.
         const gridX = Math.round((x - 10) / this.GRID_SIZE);
         const gridY = Math.round((y - 10) / this.GRID_SIZE);
         occupied.add(`${gridX},${gridY}`);
       } else {
-        unpositioned.push(service);
+        unpositioned.push(entity);
       }
     });
 
-    // 2. Place unpositioned services
+    // 2. Place unpositioned entities
     let currentGridX = 0;
     let currentGridY = 0;
 
-    unpositioned.forEach(service => {
+    unpositioned.forEach(entity => {
       // Find next available slot
       while (occupied.has(`${currentGridX},${currentGridY}`)) {
         currentGridX++;
@@ -66,7 +60,7 @@ export class LayoutService {
       const y = currentGridY * this.GRID_SIZE + 10;
 
       nodes.push({
-        ...service,
+        ...entity,
         x,
         y,
         originalX: x,

@@ -1,41 +1,45 @@
 <div class="container">
-    <h1>{{ isEditing ? 'Edit Service' : 'New Service' }}</h1>
-
+    <h1>{{ isEditing ? 'Edit Entity' : 'New Entity' }}</h1>
 
     <form (submit)="submit()">
         <mat-form-field>
             <mat-label>Name</mat-label>
-            <input matInput required [(ngModel)]="service.name" name="name" />
+            <input matInput required [(ngModel)]="entity.name" name="name" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Type</mat-label>
+            <input matInput required [(ngModel)]="entity.type" name="type" placeholder="e.g. service, cluster, vm" />
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>P99 (ms)</mat-label>
-            <input matInput type="number" [(ngModel)]="service.p99_millis" name="p99_millis" required />
+            <input matInput type="number" [(ngModel)]="entity.p99_millis" name="p99_millis" required />
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>P95 (ms)</mat-label>
-            <input matInput type="number" [(ngModel)]="service.p95_millis" name="p95_millis" required />
+            <input matInput type="number" [(ngModel)]="entity.p95_millis" name="p95_millis" required />
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>Availability (%)</mat-label>
-            <input matInput type="number" [(ngModel)]="service.availability" name="availability" required />
+            <input matInput type="number" [(ngModel)]="entity.availability" name="availability" required />
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>Throughput (rps)</mat-label>
-            <input matInput type="number" [(ngModel)]="service.throughput_rps" name="throughput_rps" required />
+            <input matInput type="number" [(ngModel)]="entity.throughput_rps" name="throughput_rps" required />
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>X Coordinate</mat-label>
-            <input matInput type="number" [(ngModel)]="service.x" name="x" />
+            <input matInput type="number" [(ngModel)]="entity.x" name="x" />
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>Y Coordinate</mat-label>
-            <input matInput type="number" [(ngModel)]="service.y" name="y" />
+            <input matInput type="number" [(ngModel)]="entity.y" name="y" />
         </mat-form-field>
 
         <button mat-raised-button color="accent" type="button" (click)="resetCoordinates()">
@@ -49,6 +53,4 @@
             Cancel
         </button>
     </form>
-
-
 </div>

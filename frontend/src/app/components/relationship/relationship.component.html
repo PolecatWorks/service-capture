@@ -1,0 +1,36 @@
+<div class="container">
+    <h1>{{ isEditing ? 'Edit Relationship' : 'New Relationship' }}</h1>
+
+    <form (submit)="submit()">
+        <mat-form-field>
+            <mat-label>Type</mat-label>
+            <input matInput [(ngModel)]="relationship.relationship_type" name="relationship_type" required
+                placeholder="e.g. depends_on, hosted_on" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>From Entity</mat-label>
+            <mat-select [(ngModel)]="relationship.from_id" name="from_id" required>
+                <mat-option *ngFor="let entity of entities" [value]="entity.id">
+                    {{entity.name}} ({{entity.id}}) [{{entity.type}}]
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>To Entity</mat-label>
+            <mat-select [(ngModel)]="relationship.to_id" name="to_id" required>
+                <mat-option *ngFor="let entity of entities" [value]="entity.id">
+                    {{entity.name}} ({{entity.id}}) [{{entity.type}}]
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit">
+            Save
+        </button>
+        <button mat-raised-button color="warn" type="button" (click)="cancel()">
+            Cancel
+        </button>
+    </form>
+</div>

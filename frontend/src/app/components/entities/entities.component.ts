@@ -1,8 +1,8 @@
 import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { DependenciesService } from '../../services/dependencies.service';
-import { Dependency } from '../../structs/dependency';
+import { EntitiesService } from '../../services/entities.service';
+import { Entity } from '../../structs/entity';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -11,20 +11,20 @@ import { PaginationDataSource } from '../../services/paginated-data-source.servi
 import { PageOptions } from '../../services/pagination';
 
 @Component({
-  selector: 'app-dependencies',
+  selector: 'app-entities',
   standalone: true,
   imports: [CommonModule, RouterModule, MatTableModule, MatPaginatorModule, MatButtonModule, MatIconModule],
-  templateUrl: './dependencies.component.html',
-  styleUrl: './dependencies.component.scss',
+  templateUrl: './entities.component.html',
+  styleUrl: './entities.component.scss',
 })
-export class DependenciesComponent implements AfterViewInit {
-  displayedColumns: string[] = ['id', 'name', 'source_id', 'target_id', 'actions'];
-  data: PaginationDataSource<Dependency>;
+export class EntitiesComponent implements AfterViewInit {
+  displayedColumns: string[] = ['id', 'name', 'type', 'p99_millis', 'p95_millis', 'availability', 'throughput_rps', 'actions'];
+  data: PaginationDataSource<Entity>;
 
-  constructor(private dependenciesService: DependenciesService) {
-    this.data = new PaginationDataSource<Dependency>(
-      (request: PageOptions<Dependency>) => this.dependenciesService.getPagedDetail(request),
-      this.dependenciesService.sourceUpdate(),
+  constructor(private entitiesService: EntitiesService) {
+    this.data = new PaginationDataSource<Entity>(
+      (request: PageOptions<Entity>) => this.entitiesService.getPagedDetail(request),
+      this.entitiesService.sourceUpdate(),
       { property: 'name', order: 'asc' },
       0
     );
@@ -33,18 +33,19 @@ export class DependenciesComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.data.sortBy({ property: 'name', order: 'asc' });
     this.data.fetch(0);
-    this.dependenciesService.sourceRefresh(Date.now());
+    this.entitiesService.sourceRefresh(Date.now());
+    console.log('Have send sortBy and fetch');
   }
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   delete(id: number) {
-    if (confirm('Are you sure you want to delete this dependency?')) {
-      this.dependenciesService.delete(id).subscribe({
+    if (confirm('Are you sure you want to delete this entity?')) {
+      this.entitiesService.delete(id).subscribe({
         next: () => {
           this.data.fetch(0);
         },
-        error: (err) => console.error('Error deleting dependency:', err)
+        error: (err) => console.error('Error deleting entity:', err)
       });
     }
   }

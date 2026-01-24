@@ -17,14 +17,14 @@
             </text>
         </g>
 
-        <g *ngFor="let service of services" (mousedown)="onMouseDown($event, service)" class="service-node"
-            [class.dragging]="draggingService === service">
-            <circle [attr.cx]="service.x" [attr.cy]="service.y" r="4" fill="#3f51b5" opacity="0.7">
-                <title>{{ service.name }}</title>
+        <g *ngFor="let entity of entities" (mousedown)="onMouseDown($event, entity)" class="service-node"
+            [class.dragging]="draggingEntity === entity">
+            <circle [attr.cx]="entity.x" [attr.cy]="entity.y" r="4" fill="#3f51b5" opacity="0.7">
+                <title>{{ entity.name }} ({{entity.type}})</title>
             </circle>
-            <text [attr.x]="service.x" [attr.y]="service.y" text-anchor="middle" dominant-baseline="middle"
-                font-size="2" fill="white" pointer-events="none">
-                {{ service.name }}
+            <text [attr.x]="entity.x" [attr.y]="entity.y" text-anchor="middle" dominant-baseline="middle" font-size="2"
+                fill="white" pointer-events="none">
+                {{ entity.name }}
             </text>
         </g>
     </svg>

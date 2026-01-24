@@ -19,11 +19,15 @@
 
         <g *ngFor="let entity of entities" (mousedown)="onMouseDown($event, entity)" class="service-node"
             [class.dragging]="draggingEntity === entity">
-            <circle [attr.cx]="entity.x" [attr.cy]="entity.y" r="4" fill="#3f51b5" opacity="0.7">
+            <circle [attr.cx]="entity.x" [attr.cy]="entity.y" r="5" fill="#3f51b5" opacity="0.8">
                 <title>{{ entity.name }} ({{entity.type}})</title>
             </circle>
-            <text [attr.x]="entity.x" [attr.y]="entity.y" text-anchor="middle" dominant-baseline="middle" font-size="2"
-                fill="white" pointer-events="none">
+            <text [attr.x]="entity.x" [attr.y]="entity.y" text-anchor="middle" dominant-baseline="middle"
+                class="material-icons no-select" font-size="6" fill="white">
+                {{ getIcon(entity.type) }}
+            </text>
+            <text [attr.x]="entity.x" [attr.y]="entity.y + 7" text-anchor="middle" font-size="2.5" fill="#333"
+                class="no-select">
                 {{ entity.name }}
             </text>
         </g>

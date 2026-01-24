@@ -30,7 +30,9 @@ Upon approval of the plan, enter development mode:
 After completing a batch of features and before handing off to the user:
 1.  **Build**: Run the Docker build steps to ensure everything builds correctly.
     - Use `make backend-docker` and `make frontend-docker` (or appropriate targets).
-2.  **Ready for Push**: Ensure the codebase is clean and ready for the user to push.
+3.  **Ready for Push**:
+    -   **CRITICAL**: You MUST run both `make backend-docker` and `make frontend-docker` and ensure they succeed before pushing or creating a Pull Request. This ensures the CI/CD pipeline will not break.
+    -   Ensure the codebase is clean.
 
 ## Tooling & Standards
 

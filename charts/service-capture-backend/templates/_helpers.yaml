@@ -78,6 +78,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 
+{{- define "service-capture-backend.shas" -}}
+checksum/config: {{ tpl (include "service-capture-backend.config" .) . | sha256sum }}
+checksum/volumes: {{ tpl (include "service-capture-backend.volumes" .) . | sha256sum }}
+{{- end -}}
 
 
 {{/*

@@ -16,14 +16,14 @@ use service_capture::{
 };
 use tracing::level_filters::LevelFilter;
 use tracing::{Level, debug, error, info};
+use tracing_subscriber::EnvFilter;
 
 use service_capture::{NAME, VERSION, service_start};
-use tracing_subscriber::EnvFilter;
 
 /// Application definition to defer to set of commands under [Commands]
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
-struct Args {
+struct Cli {
     #[command(subcommand)]
     command: Commands,
 }
@@ -95,7 +95,7 @@ fn main() -> Result<ExitCode, MyError> {
         .with_env_filter(env)
         .init();
 
-    let args = Args::parse();
+    let args = Cli::parse();
     match args.command {
         Commands::Version => {
             println!("{NAME} Version: :{VERSION}");

@@ -12,7 +12,11 @@
 
             <ng-container matColumnDef="relationship_type">
                 <th mat-header-cell *matHeaderCellDef> Type </th>
-                <td mat-cell *matCellDef="let element"> {{element.relationship_type}} </td>
+                <td mat-cell *matCellDef="let element">
+                    <mat-icon
+                        style="vertical-align: middle; margin-right: 8px;">{{getRelIcon(element.relationship_type)}}</mat-icon>
+                    {{element.relationship_type}}
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="from_id">

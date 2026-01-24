@@ -3,7 +3,7 @@ import { HomeComponent } from './components/home/home.component';
 import { LoginUserComponent } from './components/login-user/login-user.component';
 import { UsersComponent } from './components/users/users.component';
 import { UserComponent } from './components/user/user.component';
-import { ServiceComponent } from './components/service/service.component';
+import { EntityComponent } from './components/entity/entity.component';
 
 export const routes: Routes = [
   {
@@ -29,30 +29,30 @@ export const routes: Routes = [
         ],
       },
       {
-        path: 'services',
-        loadComponent: () => import('./components/services/services.component').then(m => m.ServicesComponent),
+        path: 'entities',
+        loadComponent: () => import('./components/entities/entities.component').then(m => m.EntitiesComponent),
         children: [
           {
             path: 'new',
-            component: ServiceComponent,
+            component: EntityComponent,
           },
           {
             path: 'edit/:id',
-            component: ServiceComponent,
+            component: EntityComponent,
           },
         ],
       },
       {
-        path: 'dependencies',
-        loadComponent: () => import('./components/dependencies/dependencies.component').then(m => m.DependenciesComponent),
+        path: 'relationships',
+        loadComponent: () => import('./components/relationships/relationships.component').then(m => m.RelationshipsComponent),
         children: [
           {
             path: 'new',
-            loadComponent: () => import('./components/dependency/dependency.component').then(m => m.DependencyComponent),
+            loadComponent: () => import('./components/relationship/relationship.component').then(m => m.RelationshipComponent),
           },
           {
             path: 'edit/:id',
-            loadComponent: () => import('./components/dependency/dependency.component').then(m => m.DependencyComponent),
+            loadComponent: () => import('./components/relationship/relationship.component').then(m => m.RelationshipComponent),
           },
         ],
       },

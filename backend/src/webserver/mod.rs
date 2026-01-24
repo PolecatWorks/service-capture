@@ -1,5 +1,5 @@
-pub mod dependencies;
-pub mod services;
+pub mod entities;
+pub mod relationships;
 pub mod users;
 
 use axum::{
@@ -45,16 +45,19 @@ impl<'de> serde_with::DeserializeAs<'de, Decimal> for SerializeDecimal {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
-enum SortOrder {
+pub enum SortOrder {
     Asc,
     Desc,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PageSort {
-    property: String,
-    direction: SortOrder,
+    #[serde(alias = "sortProperty")]
+    pub property: String,
+    #[serde(alias = "sortOrder")]
+    pub direction: SortOrder,
 }
 
 // The query parameters for list_todos.
@@ -63,7 +66,7 @@ pub struct PageOptions {
     pub page: Option<DbBigSerial>,
     pub size: Option<DbBigSerial>,
     #[serde(flatten)]
-    pub sort: Option<DbBigSerial>,
+    pub sort: Option<PageSort>,
 }
 
 impl Default for PageOptions {
@@ -156,8 +159,8 @@ pub async fn start_app_api(
     // Setup http server
     let app = Router::new()
         .nest("/users", users::user_apis())
-        .nest("/services", services::service_apis())
-        .nest("/dependencies", dependencies::dependency_apis())
+        .nest("/entities", entities::entity_apis())
+        .nest("/relationships", relationships::relationship_apis())
         .route("/hello", get(|| async { "Hello, World!" }))
         // .route("/metrics", get(|| async move { metric_handle.render() }))
         .layer(

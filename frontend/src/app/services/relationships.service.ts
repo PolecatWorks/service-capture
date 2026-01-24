@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { RestGeneric } from './rest-generic';
-import { Dependency } from '../structs/dependency';
+import { Relationship } from '../structs/relationship';
 import { CaptureService } from './capture.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class DependenciesService extends RestGeneric<Dependency> {
+export class RelationshipsService extends RestGeneric<Relationship> {
   constructor(captureService: CaptureService) {
-    super(captureService.http, captureService.prefix + '/dependencies', 'Dependencies');
+    super(captureService.http, captureService.prefix + '/relationships', 'Relationships');
   }
 }

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ServicesService } from '../../services/services.service';
-import { DependenciesService } from '../../services/dependencies.service';
-import { Service } from '../../structs/service';
-import { Dependency } from '../../structs/dependency';
+import { EntitiesService } from '../../services/entities.service';
+import { RelationshipsService } from '../../services/relationships.service';
+import { Entity } from '../../structs/entity';
+import { Relationship } from '../../structs/relationship';
 import { PageOptions } from '../../services/pagination';
-import { LayoutService, ServiceNode } from '../../services/layout.service';
+import { LayoutService, EntityNode } from '../../services/layout.service';
 
 interface Connection {
   x1: number;
@@ -23,7 +23,7 @@ interface Connection {
   styleUrl: './service-view.component.scss',
 })
 export class ServiceViewComponent implements OnInit {
-  services: ServiceNode[] = [];
+  entities: EntityNode[] = [];
   connections: Connection[] = [];
 
   // ViewBox state
@@ -39,20 +39,20 @@ export class ServiceViewComponent implements OnInit {
   Math = Math;
 
   // Drag state
-  draggingService: ServiceNode | null = null;
+  draggingEntity: EntityNode | null = null;
   isPanning = false;
   dragStartX = 0;
   dragStartY = 0;
-  initialServiceX = 0;
-  initialServiceY = 0;
+  initialEntityX = 0;
+  initialEntityY = 0;
   initialVbX = 0;
   initialVbY = 0;
 
   constructor(
-    private servicesService: ServicesService,
-    private dependenciesService: DependenciesService,
+    private entitiesService: EntitiesService,
+    private relationshipsService: RelationshipsService,
     private layoutService: LayoutService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const pageOptions: PageOptions<any> = {
@@ -61,22 +61,22 @@ export class ServiceViewComponent implements OnInit {
       sort: { property: 'name', order: 'asc' },
     };
 
-    this.servicesService.getPagedDetail(pageOptions).subscribe(page => {
-      this.services = this.layoutService.calculatePositions(page.ids);
+    this.entitiesService.getPagedDetail(pageOptions).subscribe(page => {
+      this.entities = this.layoutService.calculatePositions(page.ids);
       this.updateViewBox();
 
-      this.dependenciesService.getPagedDetail(pageOptions).subscribe(depPage => {
-        this.dependencies = depPage.ids;
-        this.calculateConnections(this.dependencies);
+      this.relationshipsService.getPagedDetail(pageOptions).subscribe(depPage => {
+        this.relationships = depPage.ids;
+        this.calculateConnections(this.relationships);
       });
     });
   }
 
-  calculateConnections(dependencies: Dependency[]) {
-    this.connections = dependencies
-      .map(dep => {
-        const source = this.services.find(s => s.id === dep.source_id);
-        const target = this.services.find(s => s.id === dep.target_id);
+  calculateConnections(relationships: Relationship[]) {
+    this.connections = relationships
+      .map(rel => {
+        const source = this.entities.find(s => s.id === rel.from_id);
+        const target = this.entities.find(s => s.id === rel.to_id);
 
         if (source && target) {
           return {
@@ -84,7 +84,7 @@ export class ServiceViewComponent implements OnInit {
             y1: source.y,
             x2: target.x,
             y2: target.y,
-            name: dep.name,
+            name: rel.relationship_type, // Was dep.name
           } as Connection;
         }
         return null;
@@ -93,14 +93,14 @@ export class ServiceViewComponent implements OnInit {
   }
 
   // Drag and Drop Handlers
-  onMouseDown(event: MouseEvent, service?: ServiceNode) {
+  onMouseDown(event: MouseEvent, entity?: EntityNode) {
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
 
-    if (service) {
-      this.draggingService = service;
-      this.initialServiceX = service.x;
-      this.initialServiceY = service.y;
+    if (entity) {
+      this.draggingEntity = entity;
+      this.initialEntityX = entity.x;
+      this.initialEntityY = entity.y;
       event.stopPropagation(); // Prevent event bubbling to SVG background
     } else {
       this.isPanning = true;
@@ -110,7 +110,7 @@ export class ServiceViewComponent implements OnInit {
   }
 
   onMouseMove(event: MouseEvent) {
-    if (this.draggingService) {
+    if (this.draggingEntity) {
       // We need to map screen delta to SVG coordinates delta
       // The scale factor is vbW / svgWidth
       const svgElement = (event.target as Element).closest('svg');
@@ -123,8 +123,8 @@ export class ServiceViewComponent implements OnInit {
       const dx = (event.clientX - this.dragStartX) * scaleX;
       const dy = (event.clientY - this.dragStartY) * scaleY;
 
-      this.draggingService.x = this.initialServiceX + dx;
-      this.draggingService.y = this.initialServiceY + dy;
+      this.draggingEntity.x = this.initialEntityX + dx;
+      this.draggingEntity.y = this.initialEntityY + dy;
 
       // Update connections
       this.updateConnections();
@@ -145,12 +145,12 @@ export class ServiceViewComponent implements OnInit {
   }
 
   onMouseUp() {
-    this.draggingService = null;
+    this.draggingEntity = null;
     this.isPanning = false;
   }
 
   onMouseLeave() {
-    this.draggingService = null;
+    this.draggingEntity = null;
     this.isPanning = false;
   }
 
@@ -193,19 +193,15 @@ export class ServiceViewComponent implements OnInit {
   }
 
   updateConnections() {
-    // Re-calculate connections based on new service positions
-    // We can just re-run calculateConnections but we need the dependencies list.
-    // Since we don't store dependencies permanently in a property that is easy to access without re-fetching or storing,
-    // let's store dependencies or just update existing connections if we can map them back.
-    // Easier approach: Store dependencies in the component.
-    if (this.dependencies) {
-      this.calculateConnections(this.dependencies);
+    // Re-calculate connections based on new entity positions
+    if (this.relationships) {
+      this.calculateConnections(this.relationships);
     }
     this.updateViewBox();
   }
 
   updateViewBox() {
-    if (this.services.length === 0) {
+    if (this.entities.length === 0) {
       this.vbX = 0;
       this.vbY = 0;
       this.vbW = 100;
@@ -218,7 +214,7 @@ export class ServiceViewComponent implements OnInit {
     let maxX = -Infinity;
     let maxY = -Infinity;
 
-    this.services.forEach(s => {
+    this.entities.forEach(s => {
       minX = Math.min(minX, s.x);
       minY = Math.min(minY, s.y);
       maxX = Math.max(maxX, s.x);
@@ -238,35 +234,35 @@ export class ServiceViewComponent implements OnInit {
     this.vbH = Math.max(100, maxY - minY);
   }
 
-  // Store dependencies to re-calculate connections
-  dependencies: Dependency[] = [];
+  // Store relationships to re-calculate connections
+  relationships: Relationship[] = [];
 
   // Save and Reset
   get hasChanges(): boolean {
-    return this.services.some(s => s.x !== s.originalX || s.y !== s.originalY);
+    return this.entities.some(s => s.x !== s.originalX || s.y !== s.originalY);
   }
 
   save() {
-    const modifiedServices = this.services.filter(s => s.x !== s.originalX || s.y !== s.originalY);
-    modifiedServices.forEach(s => {
-      // Update the service object with new coordinates
-      const update: Service = {
+    const modifiedEntities = this.entities.filter(s => s.x !== s.originalX || s.y !== s.originalY);
+    modifiedEntities.forEach(s => {
+      // Update the entity object with new coordinates
+      const update: Entity = {
         ...s,
         x: Math.round(s.x), // Round to integer if desired, or keep float
         y: Math.round(s.y),
       };
-      this.servicesService.update(update).subscribe({
+      this.entitiesService.update(update).subscribe({
         next: () => {
           s.originalX = s.x;
           s.originalY = s.y;
         },
-        error: err => console.error('Failed to save service position', err),
+        error: err => console.error('Failed to save entity position', err),
       });
     });
   }
 
   reset() {
-    this.services.forEach(s => {
+    this.entities.forEach(s => {
       s.x = s.originalX;
       s.y = s.originalY;
     });

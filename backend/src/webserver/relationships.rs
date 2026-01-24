@@ -16,14 +16,17 @@ use crate::{
 };
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
-pub struct ServiceDependency {
+pub struct Relationship {
     pub id: Option<DbBigSerial>,
-    pub source_id: DbBigSerial,
-    pub target_id: DbBigSerial,
-    pub name: Option<String>,
+    pub from_id: DbBigSerial,
+    pub to_id: DbBigSerial,
+    // Using string for flexible relationship types: 'depends_on', 'hosted_on', etc.
+    pub relationship_type: String,
+    // JSONB attributes as per plan
+    pub attributes: serde_json::Value,
 }
 
-pub fn dependency_apis() -> Router<MyState> {
+pub fn relationship_apis() -> Router<MyState> {
     Router::new()
         .route("/", post(create).get(list))
         .route("/{id}", get(read).put(update).delete(delete))
@@ -35,8 +38,8 @@ async fn list(
 ) -> Result<AppJson<ListPages>, MyError> {
     let options = PageOptions::defaulting(options);
 
-    let items = sqlx::query_as::<_, ServiceDependency>(
-        r#"SELECT id, source_id, target_id, name FROM service_dependencies
+    let items = sqlx::query_as::<_, Relationship>(
+        r#"SELECT id, from_id, to_id, relationship_type, attributes FROM relationships
         LIMIT $1 OFFSET $2
         "#,
     )
@@ -55,37 +58,38 @@ async fn list(
 
 async fn create(
     State(state): State<MyState>,
-    AppJson(payload): AppJson<ServiceDependency>,
+    AppJson(payload): AppJson<Relationship>,
 ) -> Result<impl IntoResponse, MyError> {
-    let dependency = sqlx::query_as::<_, ServiceDependency>(
-        "INSERT INTO service_dependencies (source_id, target_id, name) VALUES ($1, $2, $3) RETURNING *",
+    let relationship = sqlx::query_as::<_, Relationship>(
+        "INSERT INTO relationships (from_id, to_id, relationship_type, attributes) VALUES ($1, $2, $3, $4) RETURNING *",
     )
-    .bind(payload.source_id)
-    .bind(payload.target_id)
-    .bind(payload.name)
+    .bind(payload.from_id)
+    .bind(payload.to_id)
+    .bind(payload.relationship_type)
+    .bind(payload.attributes)
     .fetch_one(&state.db_state.pool_pg)
     .await?;
 
-    Ok((StatusCode::CREATED, AppJson(dependency)).into_response())
+    Ok((StatusCode::CREATED, AppJson(relationship)).into_response())
 }
 
 async fn read(
     Path(id): Path<DbBigSerial>,
     State(state): State<MyState>,
-) -> Result<AppJson<ServiceDependency>, MyError> {
-    let dependency =
-        sqlx::query_as::<_, ServiceDependency>("SELECT * FROM service_dependencies WHERE id = $1")
+) -> Result<AppJson<Relationship>, MyError> {
+    let relationship =
+        sqlx::query_as::<_, Relationship>("SELECT * FROM relationships WHERE id = $1")
             .bind(id)
             .fetch_one(&state.db_state.pool_pg)
             .await?;
 
-    Ok(AppJson(dependency))
+    Ok(AppJson(relationship))
 }
 
 async fn update(
     State(state): State<MyState>,
     Path(id): Path<DbBigSerial>,
-    AppJson(payload): AppJson<ServiceDependency>,
+    AppJson(payload): AppJson<Relationship>,
 ) -> Result<impl IntoResponse, MyError> {
     if payload.id.is_none() || id != payload.id.unwrap() {
         return Err(MyError::Message(
@@ -93,34 +97,34 @@ async fn update(
         ));
     }
 
-    let dependency = sqlx::query_as::<_, ServiceDependency>(
+    let relationship = sqlx::query_as::<_, Relationship>(
         r#"
-        UPDATE service_dependencies
-        SET source_id = $2, target_id = $3, name = $4
+        UPDATE relationships
+        SET from_id = $2, to_id = $3, relationship_type = $4, attributes = $5
         WHERE id = $1
         RETURNING *
         "#,
     )
     .bind(id)
-    .bind(payload.source_id)
-    .bind(payload.target_id)
-    .bind(payload.name)
+    .bind(payload.from_id)
+    .bind(payload.to_id)
+    .bind(payload.relationship_type)
+    .bind(payload.attributes)
     .fetch_one(&state.db_state.pool_pg)
     .await?;
 
-    Ok(AppJson(dependency))
+    Ok(AppJson(relationship))
 }
 
 async fn delete(
     State(state): State<MyState>,
     Path(id): Path<DbBigSerial>,
-) -> Result<AppJson<ServiceDependency>, MyError> {
-    let dependency = sqlx::query_as::<_, ServiceDependency>(
-        "DELETE FROM service_dependencies WHERE id = $1 RETURNING *",
-    )
-    .bind(id)
-    .fetch_one(&state.db_state.pool_pg)
-    .await?;
+) -> Result<AppJson<Relationship>, MyError> {
+    let relationship =
+        sqlx::query_as::<_, Relationship>("DELETE FROM relationships WHERE id = $1 RETURNING *")
+            .bind(id)
+            .fetch_one(&state.db_state.pool_pg)
+            .await?;
 
-    Ok(AppJson(dependency))
+    Ok(AppJson(relationship))
 }

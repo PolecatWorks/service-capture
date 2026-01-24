@@ -68,8 +68,10 @@ db-schema-run:
 db-schema-revert:
 	@cd backend && sqlx migrate revert --database-url ${DB_URL_EXPANDED}
 
+frontend/node_modules/bin/ng:
+	cd frontend && npm install
 
-frontend-dev:
+frontend-dev: frontend/node_modules/bin/ng
 	cd frontend && ng serve
 
 frontend-docker: PKG_NAME=service-capture

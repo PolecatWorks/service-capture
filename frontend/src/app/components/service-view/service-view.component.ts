@@ -268,4 +268,21 @@ export class ServiceViewComponent implements OnInit {
     });
     this.updateConnections();
   }
+
+  getIcon(type: string): string {
+    switch (type.toLowerCase()) {
+      case 'host':
+        return 'dns';
+      case 'availability_zone':
+        return 'cloud';
+      case 'service':
+        return 'lan';
+      case 'database':
+        return 'storage';
+      case 'region':
+        return 'public';
+      default:
+        return 'help_outline';
+    }
+  }
 }

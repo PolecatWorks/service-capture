@@ -1,56 +1,86 @@
 <div class="container">
     <h1>{{ isEditing ? 'Edit Entity' : 'New Entity' }}</h1>
 
+    <div class="actions" *ngIf="isEditing">
+        <a mat-raised-button color="accent" [routerLink]="['/home/analysis', entity.id]">Analyze Availability</a>
+    </div>
+
     <form (submit)="submit()">
-        <mat-form-field>
+        <mat-form-field appearance="fill">
             <mat-label>Name</mat-label>
             <input matInput required [(ngModel)]="entity.name" name="name" />
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="fill">
             <mat-label>Type</mat-label>
-            <input matInput required [(ngModel)]="entity.type" name="type" placeholder="e.g. service, cluster, vm" />
+            <mat-select required [(ngModel)]="entity.type" name="type">
+                <mat-option *ngFor="let type of entityTypes" [value]="type">
+                    {{ type }}
+                </mat-option>
+            </mat-select>
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="fill">
             <mat-label>P99 (ms)</mat-label>
             <input matInput type="number" [(ngModel)]="entity.p99_millis" name="p99_millis" required />
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="fill">
             <mat-label>P95 (ms)</mat-label>
             <input matInput type="number" [(ngModel)]="entity.p95_millis" name="p95_millis" required />
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="fill">
             <mat-label>Availability (%)</mat-label>
             <input matInput type="number" [(ngModel)]="entity.availability" name="availability" required />
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="fill">
             <mat-label>Throughput (rps)</mat-label>
             <input matInput type="number" [(ngModel)]="entity.throughput_rps" name="throughput_rps" required />
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="fill">
             <mat-label>X Coordinate</mat-label>
             <input matInput type="number" [(ngModel)]="entity.x" name="x" />
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="fill">
             <mat-label>Y Coordinate</mat-label>
             <input matInput type="number" [(ngModel)]="entity.y" name="y" />
         </mat-form-field>
 
-        <button mat-raised-button color="accent" type="button" (click)="resetCoordinates()">
-            Reset Coordinates
-        </button>
+        <div class="attributes-section">
+            <h3>Attributes</h3>
+            <div *ngFor="let attr of attributeList; let i = index" class="attribute-row">
+                <mat-form-field appearance="outline">
+                    <mat-label>Key</mat-label>
+                    <input matInput [(ngModel)]="attr.key" [name]="'attrKey' + i" placeholder="Key" />
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Value</mat-label>
+                    <input matInput [(ngModel)]="attr.value" [name]="'attrValue' + i" placeholder="Value" />
+                </mat-form-field>
+                <button mat-icon-button color="warn" type="button" (click)="removeAttribute(i)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+            <button mat-button type="button" (click)="addAttribute()">
+                <mat-icon>add</mat-icon> Add Attribute
+            </button>
+        </div>
 
-        <button mat-raised-button color="primary" type="submit">
-            Save
-        </button>
-        <button mat-raised-button color="warn" type="button" (click)="cancel()">
-            Cancel
-        </button>
+        <div class="button-row">
+            <button mat-raised-button color="accent" type="button" (click)="resetCoordinates()">
+                Reset Coordinates
+            </button>
+
+            <button mat-raised-button color="primary" type="submit">
+                Save
+            </button>
+            <button mat-raised-button color="warn" type="button" (click)="cancel()">
+                Cancel
+            </button>
+        </div>
     </form>
 </div>

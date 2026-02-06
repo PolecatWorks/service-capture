@@ -1,6 +1,7 @@
 pub mod entities;
 pub mod relationships;
 pub mod users;
+pub mod analysis;
 
 use axum::{
     Router,
@@ -161,6 +162,7 @@ pub async fn start_app_api(
         .nest("/users", users::user_apis())
         .nest("/entities", entities::entity_apis())
         .nest("/relationships", relationships::relationship_apis())
+        .nest("/analysis", analysis::analysis_apis())
         .route("/hello", get(|| async { "Hello, World!" }))
         // .route("/metrics", get(|| async move { metric_handle.render() }))
         .layer(

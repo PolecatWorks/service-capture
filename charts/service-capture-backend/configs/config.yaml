@@ -14,8 +14,7 @@ runtime:
   threads: 4
   name: service-capture
 webservice:
-  prefix: /capture
-  address: 0.0.0.0:8080
+  url: http://0.0.0.0:8080/capture
   forwarding_headers: []
 persistence:
   db:

@@ -14,6 +14,21 @@ The backend is built in Rust using the Axum framework for the web server, sqlx f
 
 ## API Structure
 
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Axum Router
+    participant Entities/Relationships Handler
+    participant PostgreSQL
+
+    Client->>Axum Router: HTTP Request (e.g., GET /entities)
+    Axum Router->>Entities/Relationships Handler: Route matching & Deserialization
+    Entities/Relationships Handler->>PostgreSQL: sqlx Query (async)
+    PostgreSQL-->>Entities/Relationships Handler: Query Result (Rows)
+    Entities/Relationships Handler-->>Axum Router: Domain Model / JSON response
+    Axum Router-->>Client: HTTP Response
+```
+
 The backend code is primarily organized inside `backend/src/webserver`:
 
 *   **Entities** (`entities.rs`): Contains logic and endpoints to handle entity resources (e.g., getting, listing, creating, and updating entities). These endpoints likely interface with the generic `entities` table storing dynamic types and `attributes` in JSONB.

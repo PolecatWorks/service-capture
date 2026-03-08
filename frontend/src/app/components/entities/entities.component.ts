@@ -62,7 +62,7 @@ export class EntitiesComponent implements AfterViewInit {
         next: () => {
           this.data.fetch(0);
         },
-        error: (err) => console.error('Error deleting entity:', err)
+        error: err => console.error('Error deleting entity:', err),
       });
     }
   }

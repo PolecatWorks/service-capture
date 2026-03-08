@@ -1,0 +1,35 @@
+
+> shell@0.0.0 start
+> ng serve
+
+ INFO  [Federation SSE] Local reloader initialized with endpoint /@angular-architects/native-federation:build-notifications
+ INFO  Building federation artefacts
+ INFO  Preparing shared npm packages for the platform browser-shared
+ NOTE  This only needs to be done once, as results are cached
+ NOTE  Skip packages you don't want to share in your federation config
+❯ Building...
+✔ Building...
+Initial chunk files | Names                   |  Raw size
+polyfills.js        | polyfills               | 191.19 kB |
+styles.css          | styles                  |  16.36 kB |
+main.js             | main                    | 250 bytes |
+
+                    | Initial total           | 207.80 kB
+
+Lazy chunk files    | Names                   |  Raw size
+chunk-YKHACYJY.js   | bootstrap               |  54.78 kB |
+chunk-ITGPGWIR.js   | service-view-component  |  19.39 kB |
+chunk-5EDJ3EBF.js   | entities-component      |  16.26 kB |
+chunk-3L5QJNMQ.js   | relationships-component |  13.71 kB |
+chunk-IMG4K6J3.js   | relationship-component  |  11.14 kB |
+chunk-4ZV5MM4Q.js   | -                       |   5.68 kB |
+chunk-2SFGSA3N.js   | -                       |   2.41 kB |
+chunk-XC5BUHES.js   | -                       |   1.07 kB |
+chunk-ADSG53RM.js   | -                       |   1.01 kB |
+
+Application bundle generation complete. [4.148 seconds] - 2026-03-08T20:33:06.846Z
+
+Watch mode enabled. Watching for file changes...
+NOTE: Raw file sizes do not reflect development server per-request transformations.
+Setting up bypass
+  ➜  Local:   http://localhost:4200/

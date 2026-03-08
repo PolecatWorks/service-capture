@@ -45,7 +45,17 @@ describe('LayoutService', () => {
   it('should avoid collisions with existing entities', () => {
     const entities: Entity[] = [
       { name: 'Fixed', p99_millis: 100, x: 10, y: 10, type: 'service', p95_millis: 100, availability: 99.9, throughput_rps: 10, attributes: '{}' },
-      { name: 'Dynamic', p99_millis: 100, x: null, y: null, type: 'service', p95_millis: 100, availability: 99.9, throughput_rps: 10, attributes: '{}' },
+      {
+        name: 'Dynamic',
+        p99_millis: 100,
+        x: null,
+        y: null,
+        type: 'service',
+        p95_millis: 100,
+        availability: 99.9,
+        throughput_rps: 10,
+        attributes: '{}',
+      },
     ];
     const nodes = service.calculatePositions(entities);
     const fixed = nodes.find(n => n.name === 'Fixed')!;

@@ -59,7 +59,7 @@ export class UsersComponent implements AfterViewInit {
         next: () => {
           this.data.fetch(0);
         },
-        error: (err) => console.error('Error deleting user:', err)
+        error: err => console.error('Error deleting user:', err),
       });
     }
   }

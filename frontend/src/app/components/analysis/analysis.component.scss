@@ -1,0 +1,118 @@
+.analysis-container {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    h1 {
+        margin-bottom: 24px;
+        color: #333;
+    }
+
+    h2 {
+        margin-top: 32px;
+        margin-bottom: 16px;
+        color: #555;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 8px;
+    }
+
+    .summary-card {
+        display: flex;
+        gap: 32px;
+        background: #f5f5f5;
+        padding: 24px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+
+        .metric {
+            display: flex;
+            flex-direction: column;
+
+            .label {
+                font-size: 14px;
+                color: #777;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .value {
+                font-size: 24px;
+                font-weight: 500;
+                color: #333;
+                margin-top: 4px;
+            }
+        }
+    }
+
+    .dependency-tree {
+        .tree-root {
+            margin-top: 16px;
+        }
+    }
+}
+
+.group-block {
+    margin-bottom: 16px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 12px;
+
+    .group-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        background: #fafafa;
+        padding: 8px;
+        border-radius: 4px;
+
+        .group-type {
+            font-weight: 500;
+            color: #3f51b5;
+        }
+
+        .group-avail {
+            font-weight: bold;
+            color: #2e7d32;
+        }
+    }
+
+    .group-items {
+        padding-left: 16px;
+    }
+}
+
+.dependency-panel {
+    margin-bottom: 8px;
+
+    mat-panel-title {
+        font-weight: 500;
+    }
+
+    mat-panel-description {
+        font-size: 13px;
+    }
+
+    .nested-dependencies {
+        margin-top: 16px;
+        border-left: 2px solid #eee;
+        padding-left: 16px;
+    }
+
+    .no-deps {
+        color: #999;
+        font-style: italic;
+        padding: 8px 0;
+    }
+}
+
+.loading-state, .error-state {
+    padding: 48px;
+    text-align: center;
+    font-size: 18px;
+    color: #666;
+}
+
+.error-state {
+    color: #d32f2f;
+}

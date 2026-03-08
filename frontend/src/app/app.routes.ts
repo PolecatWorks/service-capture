@@ -60,6 +60,10 @@ export const routes: Routes = [
         path: 'view',
         loadComponent: () => import('./components/service-view/service-view.component').then(m => m.ServiceViewComponent),
       },
+      {
+        path: 'analysis/:id',
+        loadComponent: () => import('./components/analysis/analysis.component').then(m => m.AnalysisComponent),
+      },
     ],
   },
   { path: '**', pathMatch: 'full', redirectTo: 'home' },

@@ -1,0 +1,69 @@
+<div class="analysis-container">
+    <div *ngIf="loading" class="loading-state">
+        <p>Loading analysis...</p>
+    </div>
+
+    <div *ngIf="error" class="error-state">
+        <p>{{ error }}</p>
+    </div>
+
+    <div *ngIf="report && !loading">
+        <h1>Availability Analysis: {{ report.name }}</h1>
+        <div class="summary-card">
+            <div class="metric">
+                <span class="label">Total Availability</span>
+                <span class="value">{{ report.derived_availability | number:'1.2-4' }}%</span>
+            </div>
+            <div class="metric">
+                <span class="label">Self Availability</span>
+                <span class="value">{{ report.self_availability | number:'1.2-4' }}%</span>
+            </div>
+            <div class="metric">
+                <span class="label">Entity Type</span>
+                <span class="value">{{ report.entity_type }}</span>
+            </div>
+        </div>
+
+        <h2>Dependency Breakdown</h2>
+
+        <div class="dependency-tree">
+            <!-- Root node's dependencies -->
+            <div class="tree-root">
+                <ng-container *ngTemplateOutlet="dependencyGroups; context: { groups: report.dependency_breakdown }"></ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recursive Template for Dependency Groups -->
+<ng-template #dependencyGroups let-groups="groups">
+    <div *ngFor="let group of groups" class="group-block">
+        <div class="group-header">
+            <span class="group-type">{{ group.group_type | titlecase }} Dependencies</span>
+            <span class="group-avail">Group Availability: {{ group.group_availability | number:'1.2-4' }}%</span>
+        </div>
+
+        <div class="group-items">
+            <mat-accordion>
+                <mat-expansion-panel *ngFor="let dep of group.dependencies" class="dependency-panel">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{ dep.name }} ({{ dep.entity_type }})
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            Avail: {{ dep.derived_availability | number:'1.2-4' }}% (Self: {{ dep.self_availability }}%)
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <!-- Recursive call for children of this dependency -->
+                    <div class="nested-dependencies" *ngIf="dep.dependency_breakdown?.length > 0; else noDeps">
+                        <ng-container *ngTemplateOutlet="dependencyGroups; context: { groups: dep.dependency_breakdown }"></ng-container>
+                    </div>
+                    <ng-template #noDeps>
+                        <p class="no-deps">No further dependencies.</p>
+                    </ng-template>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+    </div>
+</ng-template>

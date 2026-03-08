@@ -1,35 +1,50 @@
 <div class="service-view-container">
-    <div class="toolbar">
-        <button (click)="save()" [disabled]="!hasChanges">Save</button>
-        <button (click)="reset()" [disabled]="!hasChanges">Reset</button>
-    </div>
-    <svg class="service-svg" [attr.viewBox]="viewBox" preserveAspectRatio="xMidYMid meet"
-        (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp()" (mouseleave)="onMouseLeave()"
-        (wheel)="onWheel($event)" (mousedown)="onMouseDown($event)">
-        <!-- Draw connections first so they are behind the nodes -->
-        <g *ngFor="let conn of connections">
-            <line [attr.x1]="conn.x1" [attr.y1]="conn.y1" [attr.x2]="conn.x2" [attr.y2]="conn.y2" stroke="#999"
-                stroke-width="0.5" />
-            <text *ngIf="conn.name" [attr.x]="(conn.x1 + conn.x2) / 2" [attr.y]="(conn.y1 + conn.y2) / 2"
-                text-anchor="middle" dominant-baseline="middle" font-size="1.5" fill="#666"
-                style="background-color: white;">
-                {{ conn.name }}
-            </text>
-        </g>
+  <div class="toolbar">
+    <button (click)="save()" [disabled]="!hasChanges">Save</button>
+    <button (click)="reset()" [disabled]="!hasChanges">Reset</button>
+  </div>
+  <svg
+    class="service-svg"
+    [attr.viewBox]="viewBox"
+    preserveAspectRatio="xMidYMid meet"
+    (mousemove)="onMouseMove($event)"
+    (mouseup)="onMouseUp()"
+    (mouseleave)="onMouseLeave()"
+    (wheel)="onWheel($event)"
+    (mousedown)="onMouseDown($event)">
+    <!-- Draw connections first so they are behind the nodes -->
+    <g *ngFor="let conn of connections">
+      <line [attr.x1]="conn.x1" [attr.y1]="conn.y1" [attr.x2]="conn.x2" [attr.y2]="conn.y2" stroke="#999" stroke-width="0.5" />
+      <text
+        *ngIf="conn.name"
+        [attr.x]="(conn.x1 + conn.x2) / 2"
+        [attr.y]="(conn.y1 + conn.y2) / 2"
+        text-anchor="middle"
+        dominant-baseline="middle"
+        font-size="1.5"
+        fill="#666"
+        style="background-color: white">
+        {{ conn.name }}
+      </text>
+    </g>
 
-        <g *ngFor="let entity of entities" (mousedown)="onMouseDown($event, entity)" class="service-node"
-            [class.dragging]="draggingEntity === entity">
-            <circle [attr.cx]="entity.x" [attr.cy]="entity.y" r="5" fill="#3f51b5" opacity="0.8">
-                <title>{{ entity.name }} ({{entity.type}})</title>
-            </circle>
-            <text [attr.x]="entity.x" [attr.y]="entity.y" text-anchor="middle" dominant-baseline="middle"
-                class="material-icons no-select" font-size="6" fill="white">
-                {{ getIcon(entity.type) }}
-            </text>
-            <text [attr.x]="entity.x" [attr.y]="entity.y + 7" text-anchor="middle" font-size="2.5" fill="#333"
-                class="no-select">
-                {{ entity.name }}
-            </text>
-        </g>
-    </svg>
+    <g *ngFor="let entity of entities" (mousedown)="onMouseDown($event, entity)" class="service-node" [class.dragging]="draggingEntity === entity">
+      <circle [attr.cx]="entity.x" [attr.cy]="entity.y" r="5" fill="#3f51b5" opacity="0.8">
+        <title>{{ entity.name }} ({{ entity.type }})</title>
+      </circle>
+      <text
+        [attr.x]="entity.x"
+        [attr.y]="entity.y"
+        text-anchor="middle"
+        dominant-baseline="middle"
+        class="material-icons no-select"
+        font-size="6"
+        fill="white">
+        {{ getIcon(entity.type) }}
+      </text>
+      <text [attr.x]="entity.x" [attr.y]="entity.y + 7" text-anchor="middle" font-size="2.5" fill="#333" class="no-select">
+        {{ entity.name }}
+      </text>
+    </g>
+  </svg>
 </div>

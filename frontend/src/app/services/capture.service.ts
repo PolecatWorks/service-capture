@@ -14,7 +14,7 @@ export class CaptureService {
   constructor(
     public http: HttpClient,
     private authService: AuthService
-  ) { }
+  ) {}
 
   public prefix = '/capture';
 

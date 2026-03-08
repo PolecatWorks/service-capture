@@ -52,7 +52,7 @@ export class ServiceViewComponent implements OnInit {
     private entitiesService: EntitiesService,
     private relationshipsService: RelationshipsService,
     private layoutService: LayoutService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     const pageOptions: PageOptions<any> = {

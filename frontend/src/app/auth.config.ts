@@ -3,14 +3,11 @@ import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { lastValueFrom, tap, catchError, throwError, of } from 'rxjs';
 import { isDevMode } from '@angular/core';
 
-export function initializeAuthConfig(
-  httpClient: HttpClient,
-  oauthService: OAuthService
-): () => Promise<void> {
+export function initializeAuthConfig(httpClient: HttpClient, oauthService: OAuthService): () => Promise<void> {
   return () =>
     lastValueFrom(
       httpClient.get<AuthConfig>('/assets/config/auth-config.json').pipe(
-        tap((config) => {
+        tap(config => {
           if (config.redirectUri && !config.redirectUri.startsWith('http')) {
             config.redirectUri = window.location.origin + config.redirectUri;
           }

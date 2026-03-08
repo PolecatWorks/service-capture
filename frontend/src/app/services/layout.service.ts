@@ -15,7 +15,7 @@ export class LayoutService {
   private readonly GRID_SIZE = 20;
   private readonly COLS = 5; // Adjust based on expected screen width / grid size
 
-  constructor() { }
+  constructor() {}
 
   calculatePositions(entities: Entity[]): EntityNode[] {
     const occupied = new Set<string>();

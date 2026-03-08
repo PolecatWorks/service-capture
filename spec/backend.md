@@ -37,7 +37,7 @@ The backend code is primarily organized inside `backend/src/webserver`:
 
 ## Configuration & Setup
 
-*   **Config** (`config.rs`): Deals with application-level configuration, loading from environment variables or config files.
+*   **Config** (`config.rs`): Deals with application-level configuration, loading from environment variables or config files. Web service configuration (host, port, and API prefix) is handled dynamically via a single `url` property in the `webservice` block.
 *   **Metrics** (`metrics.rs`): Responsible for providing application metrics.
 *   **Main & Lib** (`main.rs`, `lib.rs`): Entry points and core library orchestration for the Axum application.
 *   **Tokio Tools** (`tokio_tools.rs`): Helpers and utilities for working with the Tokio asynchronous runtime.

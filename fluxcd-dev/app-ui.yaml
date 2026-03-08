@@ -26,7 +26,7 @@ spec:
   values:
     image:
       repository: ghcr.io/polecatworks/service-capture-frontend
-      tag: main
+      tag: sha-b4d36bb38c14e5efef3a8df94217af9c3e97aeb4
       pullPolicy: Always # Dev ONLY
     config:
       contents:

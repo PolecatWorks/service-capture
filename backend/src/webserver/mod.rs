@@ -109,18 +109,16 @@ pub struct ListPages {
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct WebServiceConfig {
-    /// Prefix of the served API
-    pub prefix: String,
-    /// Hostname to start the webservice on
-    /// This allows chainging to localhost for dev and 0.0.0.0 or specific address for deployment
-    pub address: SocketAddr,
+    /// URL to start the webservice on
+    /// This allows chaining to localhost for dev and 0.0.0.0 or specific address for deployment,
+    /// as well as extracting the prefix of the served API
+    pub url: url::Url,
     pub forwarding_headers: Vec<String>,
 }
 impl Default for WebServiceConfig {
     fn default() -> Self {
         Self {
-            prefix: "api".to_string(),
-            address: "127.0.0.1:1234".parse().unwrap(),
+            url: "http://127.0.0.1:1234/api".parse().unwrap(),
             forwarding_headers: vec![],
         }
     }
@@ -150,7 +148,13 @@ pub async fn start_app_api(
     pool_pg: Pool<Postgres>,
     ct: CancellationToken,
 ) -> Result<(), MyError> {
-    let prefix = state.config.webservice.prefix.clone();
+    let mut prefix = state.config.webservice.url.path().to_string();
+    if prefix.ends_with('/') && prefix.len() > 1 {
+        prefix.pop();
+    }
+    if prefix == "/" {
+        prefix = "".to_string();
+    }
 
     let shared_state = state.clone();
 
@@ -185,18 +189,25 @@ pub async fn start_app_api(
         .layer(metric_layer)
         .with_state(shared_state);
 
-    let prefix_app = Router::new().nest(&prefix, app);
+    let prefix_app = if prefix.is_empty() {
+        app
+    } else {
+        Router::new().nest(&prefix, app)
+    };
+
+    let host = state.config.webservice.url.host_str().unwrap_or("127.0.0.1");
+    let port = state.config.webservice.url.port_or_known_default().unwrap_or(8080);
+    let address = format!("{}:{}", host, port);
 
     // run our app with hyper, listening globally on port 3000
-    let listener = tokio::net::TcpListener::bind(state.config.webservice.address).await?;
+    let listener = tokio::net::TcpListener::bind(&address).await?;
     let server = axum::serve(listener, prefix_app).with_graceful_shutdown(async move {
         // The move is necessary as with_graceful_shutdown requires static lifetime
         ct.cancelled().await
     });
 
     info!(
-        "Server started on {}{prefix}",
-        state.config.webservice.address
+        "Server started on {address}{prefix}"
     );
 
     Ok(server.await?)

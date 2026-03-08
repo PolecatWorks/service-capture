@@ -49,3 +49,8 @@ Always use the defined Makefile targets for building and testing. Common targets
 - Follow existing project conventions.
 - Ensure Rust code compiles without warnings where possible.
 - Ensure Angular code builds without errors.
+
+### Maintaining Specifications (CRITICAL)
+- The `spec/` directory contains high-level specification documents for the project (backend, frontend, database, helm, etc.).
+- **Whenever you make a structural, architectural, or significant change to the codebase** (e.g., adding a new backend endpoint, changing the database schema, modifying helm charts, adding new frontend components/routes), you **MUST** update the corresponding specification document in the `spec/` directory to reflect these changes.
+- These documents serve as the source of truth for understanding the system. Keeping them up-to-date is a core responsibility.

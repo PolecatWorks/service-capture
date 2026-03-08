@@ -30,6 +30,8 @@ spec:
       pullPolicy: Always # Dev ONLY
     secretName: db0-service-cap-user
     configs:
+      webservice:
+        url: http://0.0.0.0:8080/capture
       persistence:
         db:
           connection:

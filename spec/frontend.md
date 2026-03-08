@@ -6,6 +6,24 @@ The frontend is a single-page application built using the Angular framework and 
 
 ## Architecture
 
+```mermaid
+graph TD
+    User[User interacting with UI] --> Components
+
+    subgraph Angular Application
+        Components[UI Components] --> Services
+        Services[Angular Services] -.-> Structs[Domain Structs/Interfaces]
+
+        subgraph HTTP Layer
+            Services --> HttpClient
+            HttpClient --> AuthInterceptor
+        AuthInterceptor[Auth Interceptor\nAttaches JWT]
+        end
+    end
+
+    AuthInterceptor --> Backend[Rust Backend API]
+```
+
 *   **Framework**: Angular
 *   **UI Library**: Angular Material
 *   **Styling**: SCSS

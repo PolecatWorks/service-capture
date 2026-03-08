@@ -6,6 +6,24 @@ The application utilizes PostgreSQL as its persistent storage layer. The schema 
 
 ## Core Schema Components
 
+```mermaid
+erDiagram
+    ENTITIES {
+        bigint id PK
+        varchar type "e.g., Service, Database"
+        varchar name
+        jsonb attributes "Metadata, SLIs/SLOs"
+    }
+
+    RELATIONSHIPS {
+        bigint source_id FK "Consumer/Parent"
+        bigint target_id FK "Dependency/Child"
+    }
+
+    ENTITIES ||--o{ RELATIONSHIPS : "depends on (source)"
+    ENTITIES ||--o{ RELATIONSHIPS : "is dependency of (target)"
+```
+
 The data model uses a generalized approach to support a variety of infrastructure elements without requiring schema changes for every new entity type.
 
 ### 1. `entities` Table
